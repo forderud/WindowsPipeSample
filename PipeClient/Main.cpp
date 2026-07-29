@@ -7,7 +7,6 @@
 #define BUFSIZE 512
 
 int wmain(int argc, wchar_t* argv[]) {
-    DWORD  cbRead, cbToWrite, cbWritten, dwMode;
     const wchar_t PIPE_NAME[] = L"\\\\.\\pipe\\mynamedpipe";
 
     const wchar_t* lpvMessage = L"Default message from client.";
@@ -49,7 +48,7 @@ int wmain(int argc, wchar_t* argv[]) {
 
     // The pipe connected; change to message-read mode. 
 
-    dwMode = PIPE_READMODE_MESSAGE;
+    DWORD dwMode = PIPE_READMODE_MESSAGE;
     BOOL fSuccess = SetNamedPipeHandleState(
         hPipe,    // pipe handle 
         &dwMode,  // new pipe mode 
@@ -62,9 +61,10 @@ int wmain(int argc, wchar_t* argv[]) {
 
     // Send a message to the pipe server. 
 
-    cbToWrite = (lstrlen(lpvMessage) + 1) * sizeof(wchar_t);
+    DWORD cbToWrite = (lstrlen(lpvMessage) + 1) * sizeof(wchar_t);
     _tprintf(TEXT("Sending %d byte message: \"%s\"\n"), cbToWrite, lpvMessage);
 
+    DWORD cbWritten = 0;
     fSuccess = WriteFile(
         hPipe,                  // pipe handle 
         lpvMessage,             // message 
@@ -82,6 +82,7 @@ int wmain(int argc, wchar_t* argv[]) {
     do {
         // Read from the pipe.
         wchar_t chBuf[BUFSIZE];
+        DWORD  cbRead = 0;
         fSuccess = ReadFile(
             hPipe,    // pipe handle 
             chBuf,    // buffer to receive reply 
