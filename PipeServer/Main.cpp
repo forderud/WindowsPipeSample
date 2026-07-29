@@ -18,7 +18,7 @@ int wmain() {
     // with that client, and this loop is free to wait for the
     // next client connect request. It is an infinite loop.
     for (;;) {
-        wprintf(TEXT("\nPipe Server: Main thread awaiting client connection on %s\n"), PIPE_NAME);
+        wprintf(L"\nPipe Server: Main thread awaiting client connection on %s\n", PIPE_NAME);
         HANDLE hPipe = CreateNamedPipe(
             PIPE_NAME,             // pipe name 
             PIPE_ACCESS_DUPLEX,       // read/write access 
@@ -32,7 +32,7 @@ int wmain() {
             NULL);                    // default security attribute 
 
         if (hPipe == INVALID_HANDLE_VALUE) {
-            _tprintf(TEXT("CreateNamedPipe failed, GLE=%d.\n"), GetLastError());
+            wprintf(L"CreateNamedPipe failed, GLE=%d.\n", GetLastError());
             return -1;
         }
 
@@ -56,7 +56,7 @@ int wmain() {
                 &dwThreadId);      // returns thread ID 
 
             if (hThread == NULL) {
-                _tprintf(TEXT("CreateThread failed, GLE=%d.\n"), GetLastError());
+                wprintf(L"CreateThread failed, GLE=%d.\n", GetLastError());
                 return -1;
             }
             else CloseHandle(hThread);
@@ -129,9 +129,9 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 
         if (!fSuccess || cbBytesRead == 0) {
             if (GetLastError() == ERROR_BROKEN_PIPE) {
-                _tprintf(TEXT("InstanceThread: client disconnected.\n"));
+                wprintf(L"InstanceThread: client disconnected.\n");
             } else {
-                _tprintf(TEXT("InstanceThread ReadFile failed, GLE=%d.\n"), GetLastError());
+                wprintf(L"InstanceThread ReadFile failed, GLE=%d.\n", GetLastError());
             }
             break;
         }
@@ -148,7 +148,7 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
             NULL);        // not overlapped I/O 
 
         if (!fSuccess || cbReplyBytes != cbWritten) {
-            _tprintf(TEXT("InstanceThread WriteFile failed, GLE=%d.\n"), GetLastError());
+            wprintf(L"InstanceThread WriteFile failed, GLE=%d.\n", GetLastError());
             break;
         }
     }
@@ -173,10 +173,10 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 // of an instance thread. Keep in mind the main thread will continue to wait for
 // and receive other client connections while the instance thread is working.
 VOID GetAnswerToRequest(LPTSTR pchRequest, LPTSTR pchReply, LPDWORD pchBytes) {
-    _tprintf(TEXT("Client Request String:\"%s\"\n"), pchRequest);
+    wprintf(L"Client Request String:\"%s\"\n", pchRequest);
 
     // Check the outgoing message to make sure it's not too long for the buffer.
-    if (FAILED(StringCchCopy(pchReply, BUFSIZE, TEXT("default answer from server")))) {
+    if (FAILED(StringCchCopy(pchReply, BUFSIZE, L"default answer from server"))) {
         *pchBytes = 0;
         pchReply[0] = 0;
         printf("StringCchCopy failed, no outgoing message.\n");
