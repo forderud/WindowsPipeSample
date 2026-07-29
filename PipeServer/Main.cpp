@@ -10,7 +10,7 @@ DWORD WINAPI InstanceThread(LPVOID);
 VOID GetAnswerToRequest(LPTSTR, LPTSTR, LPDWORD);
 
 int wmain() {
-    const wchar_t lpszPipename[] = L"\\\\.\\pipe\\mynamedpipe";
+    const wchar_t PIPE_NAME [] = L"\\\\.\\pipe\\mynamedpipe";
 
     // The main loop creates an instance of the named pipe and 
     // then waits for a client to connect to it. When the client 
@@ -19,9 +19,9 @@ int wmain() {
     // next client connect request. It is an infinite loop.
 
     for (;;) {
-        wprintf(TEXT("\nPipe Server: Main thread awaiting client connection on %s\n"), lpszPipename);
+        wprintf(TEXT("\nPipe Server: Main thread awaiting client connection on %s\n"), PIPE_NAME);
         HANDLE hPipe = CreateNamedPipe(
-            lpszPipename,             // pipe name 
+            PIPE_NAME,             // pipe name 
             PIPE_ACCESS_DUPLEX,       // read/write access 
             PIPE_TYPE_MESSAGE |       // message type pipe 
             PIPE_READMODE_MESSAGE |   // message-read mode 

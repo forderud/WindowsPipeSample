@@ -12,7 +12,7 @@ int wmain(int argc, wchar_t* argv[]) {
     TCHAR  chBuf[BUFSIZE];
     BOOL   fSuccess = FALSE;
     DWORD  cbRead, cbToWrite, cbWritten, dwMode;
-    const wchar_t lpszPipename[] = L"\\\\.\\pipe\\mynamedpipe";
+    const wchar_t PIPE_NAME[] = L"\\\\.\\pipe\\mynamedpipe";
 
     if (argc > 1)
         lpvMessage = argv[1];
@@ -20,7 +20,7 @@ int wmain(int argc, wchar_t* argv[]) {
     // Try to open a named pipe; wait for it, if necessary. 
     while (1) {
         hPipe = CreateFile(
-            lpszPipename,   // pipe name 
+            PIPE_NAME,      // pipe name 
             GENERIC_READ |  // read and write access 
             GENERIC_WRITE,
             0,              // no sharing 
@@ -43,7 +43,7 @@ int wmain(int argc, wchar_t* argv[]) {
 
         // All pipe instances are busy, so wait for 20 seconds. 
 
-        if (!WaitNamedPipe(lpszPipename, 20000)) {
+        if (!WaitNamedPipe(PIPE_NAME, 20000)) {
             printf("Could not open pipe: 20 second wait timed out.");
             return -1;
         }
