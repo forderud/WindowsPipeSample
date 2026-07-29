@@ -34,7 +34,7 @@ int wmain(int argc, wchar_t* argv[]) {
         // Exit if an error other than ERROR_PIPE_BUSY occurs. 
 
         if (GetLastError() != ERROR_PIPE_BUSY) {
-            _tprintf(TEXT("Could not open pipe. GLE=%d\n"), GetLastError());
+            wprintf(L"Could not open pipe. GLE=%d\n", GetLastError());
             return -1;
         }
 
@@ -55,14 +55,14 @@ int wmain(int argc, wchar_t* argv[]) {
         NULL,     // don't set maximum bytes 
         NULL);    // don't set maximum time 
     if (!fSuccess) {
-        _tprintf(TEXT("SetNamedPipeHandleState failed. GLE=%d\n"), GetLastError());
+        wprintf(L"SetNamedPipeHandleState failed. GLE=%d\n", GetLastError());
         return -1;
     }
 
     // Send a message to the pipe server. 
 
     DWORD cbToWrite = (lstrlen(lpvMessage) + 1) * sizeof(wchar_t);
-    _tprintf(TEXT("Sending %d byte message: \"%s\"\n"), cbToWrite, lpvMessage);
+    wprintf(L"Sending %d byte message: \"%s\"\n", cbToWrite, lpvMessage);
 
     DWORD cbWritten = 0;
     fSuccess = WriteFile(
@@ -73,7 +73,7 @@ int wmain(int argc, wchar_t* argv[]) {
         NULL);                  // not overlapped 
 
     if (!fSuccess) {
-        _tprintf(TEXT("WriteFile to pipe failed. GLE=%d\n"), GetLastError());
+        wprintf(L"WriteFile to pipe failed. GLE=%d\n", GetLastError());
         return -1;
     }
 
@@ -93,11 +93,11 @@ int wmain(int argc, wchar_t* argv[]) {
         if (!fSuccess && GetLastError() != ERROR_MORE_DATA)
             break;
 
-        _tprintf(TEXT("\"%s\"\n"), chBuf);
+        wprintf(L"\"%s\"\n", chBuf);
     } while (!fSuccess);  // repeat loop if ERROR_MORE_DATA 
 
     if (!fSuccess) {
-        _tprintf(TEXT("ReadFile from pipe failed. GLE=%d\n"), GetLastError());
+        wprintf(L"ReadFile from pipe failed. GLE=%d\n", GetLastError());
         return -1;
     }
 
