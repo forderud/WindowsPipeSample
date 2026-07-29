@@ -80,8 +80,6 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
     std::vector<TCHAR> pchReply(BUFSIZE);
 
     DWORD cbBytesRead = 0, cbReplyBytes = 0, cbWritten = 0;
-    BOOL fSuccess = FALSE;
-    HANDLE hPipe = NULL;
 
     // Do some extra error checking since the app will keep running even if this
     // thread fails.
@@ -96,13 +94,13 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
     printf("InstanceThread created, receiving and processing messages.\n");
 
     // The thread's parameter is a handle to a pipe object instance. 
-    hPipe = (HANDLE)lpvParam;
+    HANDLE hPipe = (HANDLE)lpvParam;
 
     // Loop until done reading
     while (1) {
         // Read client requests from the pipe. This simplistic code only allows messages
         // up to BUFSIZE characters in length.
-        fSuccess = ReadFile(
+        BOOL fSuccess = ReadFile(
             hPipe,        // handle to pipe 
             pchRequest.data(), // buffer to receive data 
             BUFSIZE * sizeof(TCHAR), // size of buffer 
