@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.36330.24
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PipeServer", "PipeServer\PipeServer.vcxproj", "{0057C0AF-19C5-400C-A0AC-ABB7089A732B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PipeClient", "PipeClient\PipeClient.vcxproj", "{DC1BB401-9E92-4333-A195-F0D5ADFB1FC9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0057C0AF-19C5-400C-A0AC-ABB7089A732B} = {0057C0AF-19C5-400C-A0AC-ABB7089A732B}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{018780D8-DFBB-4D2B-A79A-9D3B92894072}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0057C0AF-19C5-400C-A0AC-ABB7089A732B}.Debug|x64.ActiveCfg = Debug|x64
+		{0057C0AF-19C5-400C-A0AC-ABB7089A732B}.Debug|x64.Build.0 = Debug|x64
+		{0057C0AF-19C5-400C-A0AC-ABB7089A732B}.Release|x64.ActiveCfg = Release|x64
+		{0057C0AF-19C5-400C-A0AC-ABB7089A732B}.Release|x64.Build.0 = Release|x64
+		{DC1BB401-9E92-4333-A195-F0D5ADFB1FC9}.Debug|x64.ActiveCfg = Debug|x64
+		{DC1BB401-9E92-4333-A195-F0D5ADFB1FC9}.Debug|x64.Build.0 = Debug|x64
+		{DC1BB401-9E92-4333-A195-F0D5ADFB1FC9}.Release|x64.ActiveCfg = Release|x64
+		{DC1BB401-9E92-4333-A195-F0D5ADFB1FC9}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
