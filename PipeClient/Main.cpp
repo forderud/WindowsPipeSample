@@ -82,8 +82,7 @@ int wmain(int argc, wchar_t* argv[]) {
     printf("\nMessage sent to server, receiving reply as follows:\n");
 
     do {
-        // Read from the pipe. 
-
+        // Read from the pipe.
         fSuccess = ReadFile(
             hPipe,    // pipe handle 
             chBuf,    // buffer to receive reply 

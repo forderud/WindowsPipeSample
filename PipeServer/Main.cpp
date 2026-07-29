@@ -10,10 +10,7 @@ DWORD WINAPI InstanceThread(LPVOID);
 VOID GetAnswerToRequest(LPTSTR, LPTSTR, LPDWORD);
 
 int wmain() {
-    BOOL   fConnected = FALSE;
-    DWORD  dwThreadId = 0;
-    HANDLE hPipe = INVALID_HANDLE_VALUE, hThread = NULL;
-    LPCTSTR lpszPipename = TEXT("\\\\.\\pipe\\mynamedpipe");
+    const wchar_t lpszPipename[] = L"\\\\.\\pipe\\mynamedpipe";
 
     // The main loop creates an instance of the named pipe and 
     // then waits for a client to connect to it. When the client 
@@ -23,7 +20,7 @@ int wmain() {
 
     for (;;) {
         wprintf(TEXT("\nPipe Server: Main thread awaiting client connection on %s\n"), lpszPipename);
-        hPipe = CreateNamedPipe(
+        HANDLE hPipe = CreateNamedPipe(
             lpszPipename,             // pipe name 
             PIPE_ACCESS_DUPLEX,       // read/write access 
             PIPE_TYPE_MESSAGE |       // message type pipe 
@@ -44,14 +41,15 @@ int wmain() {
         // the function returns a nonzero value. If the function
         // returns zero, GetLastError returns ERROR_PIPE_CONNECTED. 
 
-        fConnected = ConnectNamedPipe(hPipe, NULL) ?
+        BOOL fConnected = ConnectNamedPipe(hPipe, NULL) ?
             TRUE : (GetLastError() == ERROR_PIPE_CONNECTED);
 
         if (fConnected) {
             printf("Client connected, creating a processing thread.\n");
 
             // Create a thread for this client. 
-            hThread = CreateThread(
+            DWORD  dwThreadId = 0;
+            HANDLE hThread = CreateThread(
                 NULL,              // no security attribute 
                 0,                 // default stack size 
                 InstanceThread,    // thread proc
