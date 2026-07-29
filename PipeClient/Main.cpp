@@ -7,7 +7,6 @@
 #define BUFSIZE 512
 
 int wmain(int argc, wchar_t* argv[]) {
-    TCHAR  chBuf[BUFSIZE];
     DWORD  cbRead, cbToWrite, cbWritten, dwMode;
     const wchar_t PIPE_NAME[] = L"\\\\.\\pipe\\mynamedpipe";
 
@@ -63,7 +62,7 @@ int wmain(int argc, wchar_t* argv[]) {
 
     // Send a message to the pipe server. 
 
-    cbToWrite = (lstrlen(lpvMessage) + 1) * sizeof(TCHAR);
+    cbToWrite = (lstrlen(lpvMessage) + 1) * sizeof(wchar_t);
     _tprintf(TEXT("Sending %d byte message: \"%s\"\n"), cbToWrite, lpvMessage);
 
     fSuccess = WriteFile(
@@ -82,10 +81,11 @@ int wmain(int argc, wchar_t* argv[]) {
 
     do {
         // Read from the pipe.
+        wchar_t chBuf[BUFSIZE];
         fSuccess = ReadFile(
             hPipe,    // pipe handle 
             chBuf,    // buffer to receive reply 
-            BUFSIZE * sizeof(TCHAR),  // size of buffer 
+            BUFSIZE * sizeof(wchar_t),  // size of buffer 
             &cbRead,  // number of bytes read 
             NULL);    // not overlapped 
 
