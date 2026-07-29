@@ -17,7 +17,6 @@ int wmain() {
     // connects, a thread is created to handle communications 
     // with that client, and this loop is free to wait for the
     // next client connect request. It is an infinite loop.
-
     for (;;) {
         wprintf(TEXT("\nPipe Server: Main thread awaiting client connection on %s\n"), PIPE_NAME);
         HANDLE hPipe = CreateNamedPipe(
@@ -40,7 +39,6 @@ int wmain() {
         // Wait for the client to connect; if it succeeds, 
         // the function returns a nonzero value. If the function
         // returns zero, GetLastError returns ERROR_PIPE_CONNECTED. 
-
         BOOL fConnected = ConnectNamedPipe(hPipe, NULL) ?
             TRUE : (GetLastError() == ERROR_PIPE_CONNECTED);
 
@@ -87,7 +85,6 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 
     // Do some extra error checking since the app will keep running even if this
     // thread fails.
-
     if (lpvParam == NULL) {
         printf("\nERROR - Pipe Server Failure:\n");
         printf("   InstanceThread got an unexpected NULL value in lpvParam.\n");
@@ -117,7 +114,6 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
     printf("InstanceThread created, receiving and processing messages.\n");
 
     // The thread's parameter is a handle to a pipe object instance. 
-
     hPipe = (HANDLE)lpvParam;
 
     // Loop until done reading
@@ -160,7 +156,6 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
     // Flush the pipe to allow the client to read the pipe's contents 
     // before disconnecting. Then disconnect the pipe, and close the 
     // handle to this pipe instance. 
-
     FlushFileBuffers(hPipe);
     DisconnectNamedPipe(hPipe);
     CloseHandle(hPipe);
@@ -172,15 +167,12 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
     return 1;
 }
 
-VOID GetAnswerToRequest(LPTSTR pchRequest,
-    LPTSTR pchReply,
-    LPDWORD pchBytes)
-    // This routine is a simple function to print the client request to the console
-    // and populate the reply buffer with a default data string. This is where you
-    // would put the actual client request processing code that runs in the context
-    // of an instance thread. Keep in mind the main thread will continue to wait for
-    // and receive other client connections while the instance thread is working.
-{
+// This routine is a simple function to print the client request to the console
+// and populate the reply buffer with a default data string. This is where you
+// would put the actual client request processing code that runs in the context
+// of an instance thread. Keep in mind the main thread will continue to wait for
+// and receive other client connections while the instance thread is working.
+VOID GetAnswerToRequest(LPTSTR pchRequest, LPTSTR pchReply, LPDWORD pchBytes) {
     _tprintf(TEXT("Client Request String:\"%s\"\n"), pchRequest);
 
     // Check the outgoing message to make sure it's not too long for the buffer.

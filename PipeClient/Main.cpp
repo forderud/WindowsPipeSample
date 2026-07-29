@@ -26,20 +26,17 @@ int wmain(int argc, wchar_t* argv[]) {
             0,              // default attributes 
             NULL);          // no template file 
 
-        // Break if the pipe handle is valid. 
-
+        // Break if the pipe handle is valid.
         if (hPipe != INVALID_HANDLE_VALUE)
             break;
 
-        // Exit if an error other than ERROR_PIPE_BUSY occurs. 
-
+        // Exit if an error other than ERROR_PIPE_BUSY occurs.
         if (GetLastError() != ERROR_PIPE_BUSY) {
             wprintf(L"Could not open pipe. GLE=%d\n", GetLastError());
             return -1;
         }
 
         // All pipe instances are busy, so wait for 20 seconds. 
-
         if (!WaitNamedPipe(PIPE_NAME, 20000)) {
             printf("Could not open pipe: 20 second wait timed out.");
             return -1;
@@ -47,7 +44,6 @@ int wmain(int argc, wchar_t* argv[]) {
     }
 
     // The pipe connected; change to message-read mode. 
-
     DWORD dwMode = PIPE_READMODE_MESSAGE;
     BOOL fSuccess = SetNamedPipeHandleState(
         hPipe,    // pipe handle 
@@ -60,7 +56,6 @@ int wmain(int argc, wchar_t* argv[]) {
     }
 
     // Send a message to the pipe server. 
-
     DWORD cbToWrite = (lstrlen(lpvMessage) + 1) * sizeof(wchar_t);
     wprintf(L"Sending %d byte message: \"%s\"\n", cbToWrite, lpvMessage);
 
