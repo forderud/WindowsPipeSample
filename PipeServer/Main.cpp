@@ -7,7 +7,7 @@
 
 #define BUFSIZE 512
 
-DWORD WINAPI InstanceThread(LPVOID);
+DWORD WINAPI InstanceThread(void*);
 VOID GetAnswerToRequest(LPTSTR, LPTSTR, LPDWORD);
 
 int wmain() {
@@ -52,7 +52,7 @@ int wmain() {
                 NULL,              // no security attribute 
                 0,                 // default stack size 
                 InstanceThread,    // thread proc
-                (LPVOID)hPipe,    // thread parameter 
+                hPipe,             // thread parameter 
                 0,                 // not suspended 
                 &dwThreadId);      // returns thread ID 
 
@@ -69,7 +69,7 @@ int wmain() {
     return 0;
 }
 
-DWORD WINAPI InstanceThread(LPVOID lpvParam)
+DWORD WINAPI InstanceThread(void* lpvParam)
 // This routine is a thread processing function to read from and reply to a client
 // via the open pipe connection passed from the main loop. Note this allows
 // the main loop to continue executing, potentially creating more threads of
