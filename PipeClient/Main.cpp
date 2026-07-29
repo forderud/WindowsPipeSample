@@ -7,17 +7,16 @@
 #define BUFSIZE 512
 
 int wmain(int argc, wchar_t* argv[]) {
-    HANDLE hPipe;
-    const wchar_t* lpvMessage = L"Default message from client.";
     TCHAR  chBuf[BUFSIZE];
-    BOOL   fSuccess = FALSE;
     DWORD  cbRead, cbToWrite, cbWritten, dwMode;
     const wchar_t PIPE_NAME[] = L"\\\\.\\pipe\\mynamedpipe";
 
+    const wchar_t* lpvMessage = L"Default message from client.";
     if (argc > 1)
         lpvMessage = argv[1];
 
     // Try to open a named pipe; wait for it, if necessary. 
+    HANDLE hPipe = nullptr;
     while (1) {
         hPipe = CreateFile(
             PIPE_NAME,      // pipe name 
@@ -52,7 +51,7 @@ int wmain(int argc, wchar_t* argv[]) {
     // The pipe connected; change to message-read mode. 
 
     dwMode = PIPE_READMODE_MESSAGE;
-    fSuccess = SetNamedPipeHandleState(
+    BOOL fSuccess = SetNamedPipeHandleState(
         hPipe,    // pipe handle 
         &dwMode,  // new pipe mode 
         NULL,     // don't set maximum bytes 
