@@ -3,12 +3,10 @@
 #include <stdio.h>
 #include <conio.h>
 #include <tchar.h>
+#include "../PipeMessage.hpp"
 
-#define BUFSIZE 512
 
 int wmain(int argc, wchar_t* argv[]) {
-    const wchar_t PIPE_NAME[] = L"\\\\.\\pipe\\mynamedpipe";
-
     const wchar_t* lpvMessage = L"Default message from client.";
     if (argc > 1)
         lpvMessage = argv[1];
