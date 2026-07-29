@@ -3,6 +3,7 @@
 #include <stdio.h> 
 #include <tchar.h>
 #include <strsafe.h>
+#include <vector>
 
 #define BUFSIZE 512
 
@@ -75,9 +76,8 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 // of this procedure to run concurrently, depending on the number of incoming
 // client connections.
 {
-    HANDLE hHeap = GetProcessHeap();
-    TCHAR* pchRequest = (TCHAR*)HeapAlloc(hHeap, 0, BUFSIZE * sizeof(TCHAR));
-    TCHAR* pchReply = (TCHAR*)HeapAlloc(hHeap, 0, BUFSIZE * sizeof(TCHAR));
+    std::vector<TCHAR> pchRequest(BUFSIZE);
+    std::vector<TCHAR> pchReply(BUFSIZE);
 
     DWORD cbBytesRead = 0, cbReplyBytes = 0, cbWritten = 0;
     BOOL fSuccess = FALSE;
@@ -89,24 +89,6 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
         printf("\nERROR - Pipe Server Failure:\n");
         printf("   InstanceThread got an unexpected NULL value in lpvParam.\n");
         printf("   InstanceThread exitting.\n");
-        if (pchReply != NULL) HeapFree(hHeap, 0, pchReply);
-        if (pchRequest != NULL) HeapFree(hHeap, 0, pchRequest);
-        return (DWORD)-1;
-    }
-
-    if (pchRequest == NULL) {
-        printf("\nERROR - Pipe Server Failure:\n");
-        printf("   InstanceThread got an unexpected NULL heap allocation.\n");
-        printf("   InstanceThread exitting.\n");
-        if (pchReply != NULL) HeapFree(hHeap, 0, pchReply);
-        return (DWORD)-1;
-    }
-
-    if (pchReply == NULL) {
-        printf("\nERROR - Pipe Server Failure:\n");
-        printf("   InstanceThread got an unexpected NULL heap allocation.\n");
-        printf("   InstanceThread exitting.\n");
-        if (pchRequest != NULL) HeapFree(hHeap, 0, pchRequest);
         return (DWORD)-1;
     }
 
@@ -122,7 +104,7 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
         // up to BUFSIZE characters in length.
         fSuccess = ReadFile(
             hPipe,        // handle to pipe 
-            pchRequest,    // buffer to receive data 
+            pchRequest.data(), // buffer to receive data 
             BUFSIZE * sizeof(TCHAR), // size of buffer 
             &cbBytesRead, // number of bytes read 
             NULL);        // not overlapped I/O 
@@ -137,12 +119,12 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
         }
 
         // Process the incoming message.
-        GetAnswerToRequest(pchRequest, pchReply, &cbReplyBytes);
+        GetAnswerToRequest(pchRequest.data(), pchReply.data(), &cbReplyBytes);
 
         // Write the reply to the pipe. 
         fSuccess = WriteFile(
             hPipe,        // handle to pipe 
-            pchReply,     // buffer to write from 
+            pchReply.data(), // buffer to write from 
             cbReplyBytes, // number of bytes to write 
             &cbWritten,   // number of bytes written 
             NULL);        // not overlapped I/O 
@@ -159,9 +141,6 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
     FlushFileBuffers(hPipe);
     DisconnectNamedPipe(hPipe);
     CloseHandle(hPipe);
-
-    HeapFree(hHeap, 0, pchRequest);
-    HeapFree(hHeap, 0, pchReply);
 
     printf("InstanceThread exiting.\n");
     return 1;
