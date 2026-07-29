@@ -61,11 +61,11 @@ int wmain(int argc, wchar_t* argv[]) {
 
     DWORD cbWritten = 0;
     fSuccess = WriteFile(
-        hPipe,                  // pipe handle 
-        lpvMessage,             // message 
-        cbToWrite,              // message length 
-        &cbWritten,             // bytes written 
-        NULL);                  // not overlapped 
+        hPipe,           // pipe handle 
+        lpvMessage,      // message 
+        cbToWrite,       // message length 
+        &cbWritten,      // bytes written 
+        NULL);           // not overlapped 
 
     if (!fSuccess) {
         wprintf(L"WriteFile to pipe failed. GLE=%d\n", GetLastError());

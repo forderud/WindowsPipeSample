@@ -11,7 +11,7 @@ DWORD WINAPI InstanceThread(void*);
 VOID GetAnswerToRequest(LPTSTR, LPTSTR, LPDWORD);
 
 int wmain() {
-    const wchar_t PIPE_NAME [] = L"\\\\.\\pipe\\mynamedpipe";
+    const wchar_t PIPE_NAME[] = L"\\\\.\\pipe\\mynamedpipe";
 
     // The main loop creates an instance of the named pipe and 
     // then waits for a client to connect to it. When the client 
