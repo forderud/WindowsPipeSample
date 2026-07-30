@@ -74,20 +74,10 @@ DWORD WINAPI InstanceThread(void* lpvParam)
 // of this procedure to run concurrently, depending on the number of incoming
 // client connections.
 {
+    printf("InstanceThread created, receiving and processing messages.\n");
+
     std::vector<BUF_TYPE> requestBuf(BUF_SIZE);
     std::vector<BUF_TYPE> replyBuf(BUF_SIZE);
-
-    // Do some extra error checking since the app will keep running even if this
-    // thread fails.
-    if (lpvParam == NULL) {
-        printf("\nERROR - Pipe Server Failure:\n");
-        printf("   InstanceThread got an unexpected NULL value in lpvParam.\n");
-        printf("   InstanceThread exitting.\n");
-        return (DWORD)-1;
-    }
-
-    // Print verbose messages. In production code, this should be for debugging only.
-    printf("InstanceThread created, receiving and processing messages.\n");
 
     // The thread's parameter is a handle to a pipe object instance. 
     HANDLE pipe = (HANDLE)lpvParam;
