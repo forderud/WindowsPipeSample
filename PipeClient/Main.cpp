@@ -7,7 +7,7 @@
 
 
 int wmain(int argc, wchar_t* argv[]) {
-    const wchar_t* lpvMessage = L"Default message from client.";
+    const BUF_TYPE* lpvMessage = L"Default message from client.";
     if (argc > 1)
         lpvMessage = argv[1];
 
@@ -55,7 +55,7 @@ int wmain(int argc, wchar_t* argv[]) {
     }
 
     // Send a message to the pipe server. 
-    DWORD cbToWrite = (lstrlen(lpvMessage) + 1) * sizeof(wchar_t);
+    DWORD cbToWrite = (lstrlen(lpvMessage) + 1)*sizeof(BUF_TYPE);
     wprintf(L"Sending %d byte message: \"%s\"\n", cbToWrite, lpvMessage);
 
     DWORD cbWritten = 0;
@@ -75,12 +75,12 @@ int wmain(int argc, wchar_t* argv[]) {
 
     do {
         // Read from the pipe.
-        wchar_t chBuf[BUF_SIZE];
+        BUF_TYPE chBuf[BUF_SIZE];
         DWORD  cbRead = 0;
         fSuccess = ReadFile(
             hPipe,    // pipe handle 
             chBuf,    // buffer to receive reply 
-            BUF_SIZE*sizeof(wchar_t),  // size of buffer 
+            BUF_SIZE*sizeof(BUF_TYPE), // size of buffer 
             &cbRead,  // number of bytes read 
             NULL);    // not overlapped 
 

@@ -1,7 +1,6 @@
 /* Based on https://learn.microsoft.com/en-us/windows/win32/ipc/multithreaded-pipe-server */
 #include <windows.h> 
 #include <stdio.h> 
-#include <tchar.h>
 #include <strsafe.h>
 #include <vector>
 #include "../PipeMessage.hpp"
@@ -74,8 +73,8 @@ DWORD WINAPI InstanceThread(void* lpvParam)
 // of this procedure to run concurrently, depending on the number of incoming
 // client connections.
 {
-    std::vector<TCHAR> pchRequest(BUF_SIZE);
-    std::vector<TCHAR> pchReply(BUF_SIZE);
+    std::vector<BUF_TYPE> pchRequest(BUF_SIZE);
+    std::vector<BUF_TYPE> pchReply(BUF_SIZE);
 
     // Do some extra error checking since the app will keep running even if this
     // thread fails.
@@ -100,7 +99,7 @@ DWORD WINAPI InstanceThread(void* lpvParam)
         BOOL fSuccess = ReadFile(
             hPipe,        // handle to pipe 
             pchRequest.data(), // buffer to receive data 
-            BUF_SIZE*sizeof(TCHAR), // size of buffer 
+            BUF_SIZE*sizeof(BUF_TYPE), // size of buffer 
             &cbBytesRead, // number of bytes read 
             NULL);        // not overlapped I/O 
 
@@ -158,5 +157,5 @@ VOID GetAnswerToRequest(LPTSTR pchRequest, LPTSTR pchReply, LPDWORD pchBytes) {
         printf("StringCchCopy failed, no outgoing message.\n");
         return;
     }
-    *pchBytes = (lstrlen(pchReply) + 1) * sizeof(TCHAR);
+    *pchBytes = (lstrlen(pchReply) + 1)*sizeof(BUF_TYPE);
 }
