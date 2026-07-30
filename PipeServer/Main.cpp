@@ -143,9 +143,7 @@ DWORD WINAPI InstanceThread(void* lpvParam)
         }
     }
 
-    // Flush the pipe to allow the client to read the pipe's contents 
-    // before disconnecting. Then disconnect the pipe, and close the 
-    // handle to this pipe instance. 
+    // flush & disconnect pipe before closing it
     FlushFileBuffers(pipe);
     DisconnectNamedPipe(pipe);
     CloseHandle(pipe);
