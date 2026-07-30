@@ -19,7 +19,7 @@ int wmain() {
     for (;;) {
         wprintf(L"\nPipe Server: Main thread awaiting client connection on %s\n", PIPE_NAME);
         HANDLE hPipe = CreateNamedPipe(
-            PIPE_NAME,             // pipe name 
+            PIPE_NAME,                // pipe name 
             PIPE_ACCESS_DUPLEX,       // read/write access 
             PIPE_TYPE_MESSAGE |       // message type pipe 
             PIPE_READMODE_MESSAGE |   // message-read mode 

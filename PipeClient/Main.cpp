@@ -24,21 +24,22 @@ int wmain(int argc, wchar_t* argv[]) {
             0,              // default attributes 
             NULL);          // no template file 
 
-        // Break if the pipe handle is valid.
         if (hPipe != INVALID_HANDLE_VALUE)
-            break;
+            break; // valid handle
 
-        // Exit if an error other than ERROR_PIPE_BUSY occurs.
+        // Exit if other error than ERROR_PIPE_BUSY
         if (GetLastError() != ERROR_PIPE_BUSY) {
             wprintf(L"Could not open pipe. GLE=%d\n", GetLastError());
             return -1;
         }
-
-        // All pipe instances are busy, so wait for 20 seconds. 
+        // pipe is busy, so wait for 20 seconds before retrying
         if (!WaitNamedPipe(PIPE_NAME, 20000)) {
             printf("Could not open pipe: 20 second wait timed out.");
             return -1;
         }
+
+        // retry connecting to busy pipe
+        continue;
     }
 
     // The pipe connected; change to message-read mode. 
