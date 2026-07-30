@@ -9,7 +9,7 @@
 DWORD WINAPI InstanceThread(void* lpvParam);
 VOID GetAnswerToRequest(const std::vector<BUF_TYPE>&, std::vector<BUF_TYPE>&);
 
-int wmain() {
+int main() {
     // The main loop creates an instance of the named pipe and 
     // then waits for a client to connect to it. When the client 
     // connects, a thread is created to handle communications 
