@@ -61,7 +61,7 @@ int main(int argc, char* argv[]) {
     fSuccess = WriteFile(
         hPipe,           // pipe handle 
         message.c_str(),// message 
-        (DWORD)(message.length() + 1) * sizeof(BUF_TYPE), // message length 
+        (DWORD)(message.length() + 1), // message length 
         &cbWritten,      // bytes written 
         NULL);           // not overlapped 
 
@@ -72,12 +72,12 @@ int main(int argc, char* argv[]) {
 
     do {
         // Read from the pipe.
-        BUF_TYPE replyBuf[BUF_SIZE];
+        char replyBuf[BUF_SIZE];
         DWORD  cbRead = 0;
         fSuccess = ReadFile(
             hPipe,    // pipe handle 
-            replyBuf,    // buffer to receive reply 
-            BUF_SIZE*sizeof(BUF_TYPE), // size of buffer 
+            replyBuf, // buffer to receive reply 
+            BUF_SIZE, // size of buffer 
             &cbRead,  // number of bytes read 
             NULL);    // not overlapped 
 

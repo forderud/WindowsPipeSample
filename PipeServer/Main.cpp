@@ -76,8 +76,8 @@ DWORD WINAPI InstanceThread(void* lpvParam)
 {
     printf("InstanceThread created, receiving and processing messages.\n");
 
-    std::vector<BUF_TYPE> requestBuf(BUF_SIZE);
-    std::vector<BUF_TYPE> replyBuf(BUF_SIZE);
+    std::vector<char> requestBuf(BUF_SIZE);
+    std::vector<char> replyBuf(BUF_SIZE);
 
     // The thread's parameter is a handle to a pipe object instance. 
     HANDLE pipe = (HANDLE)lpvParam;
@@ -90,7 +90,7 @@ DWORD WINAPI InstanceThread(void* lpvParam)
         BOOL fSuccess = ReadFile(
             pipe,              // handle to pipe 
             requestBuf.data(), // buffer to receive data 
-            BUF_SIZE*sizeof(BUF_TYPE), // size of buffer 
+            BUF_SIZE,     // size of buffer 
             &cbBytesRead, // number of bytes read 
             NULL);        // not overlapped I/O 
 
@@ -116,7 +116,7 @@ DWORD WINAPI InstanceThread(void* lpvParam)
         replyBuf.resize((strlen(replyBuf.data()) + 1)); // add zero termination
 
 
-        DWORD cbReplyBytes = (DWORD)replyBuf.size()*sizeof(BUF_TYPE);
+        DWORD cbReplyBytes = (DWORD)replyBuf.size();
 
         // Write the reply to the pipe.
         DWORD cbWritten = 0;
