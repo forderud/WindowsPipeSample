@@ -13,9 +13,9 @@ int main(int argc, char* argv[]) {
         message = argv[1];
 
     // Try to open a named pipe; wait for it, if necessary. 
-    HANDLE hPipe = nullptr;
+    HANDLE pipe = nullptr;
     while (1) {
-        hPipe = CreateFile(
+        pipe = CreateFile(
             PIPE_NAME,      // pipe name 
             GENERIC_READ |  // read and write access 
             GENERIC_WRITE,
@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
             0,              // default attributes 
             NULL);          // no template file 
 
-        if (hPipe != INVALID_HANDLE_VALUE)
+        if (pipe != INVALID_HANDLE_VALUE)
             break; // valid handle
 
         // Exit if other error than ERROR_PIPE_BUSY
@@ -46,7 +46,7 @@ int main(int argc, char* argv[]) {
     // The pipe connected; change to message-read mode. 
     DWORD mode = PIPE_READMODE_MESSAGE;
     BOOL fSuccess = SetNamedPipeHandleState(
-        hPipe,    // pipe handle 
+        pipe,    // pipe handle 
         &mode,    // new pipe mode 
         NULL,     // don't set maximum bytes 
         NULL);    // don't set maximum time 
@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
 
     DWORD cbWritten = 0;
     fSuccess = WriteFile(
-        hPipe,           // pipe handle 
+        pipe,
         message.c_str(),// message 
         (DWORD)(message.length() + 1), // message length 
         &cbWritten,      // bytes written 
@@ -75,7 +75,7 @@ int main(int argc, char* argv[]) {
         char replyBuf[BUF_SIZE];
         DWORD  cbRead = 0;
         fSuccess = ReadFile(
-            hPipe,    // pipe handle 
+            pipe,
             replyBuf, // buffer to receive reply 
             BUF_SIZE, // size of buffer 
             &cbRead,  // number of bytes read 
@@ -94,7 +94,7 @@ int main(int argc, char* argv[]) {
 
     wprintf(L"\nEnd of message.\n");
 
-    CloseHandle(hPipe);
+    CloseHandle(pipe);
 
     return 0;
 }

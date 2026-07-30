@@ -88,7 +88,7 @@ DWORD WINAPI InstanceThread(void* lpvParam)
         // up to BUFSIZE characters in length.
         DWORD cbBytesRead = 0;
         BOOL fSuccess = ReadFile(
-            pipe,              // handle to pipe 
+            pipe,
             requestBuf.data(), // buffer to receive data 
             BUF_SIZE,     // size of buffer 
             &cbBytesRead, // number of bytes read 
@@ -121,7 +121,7 @@ DWORD WINAPI InstanceThread(void* lpvParam)
         // Write the reply to the pipe.
         DWORD cbWritten = 0;
         fSuccess = WriteFile(
-            pipe,         // handle to pipe 
+            pipe,
             replyBuf.data(), // buffer to write from 
             cbReplyBytes, // number of bytes to write 
             &cbWritten,   // number of bytes written 
