@@ -29,7 +29,7 @@ int main() {
             NULL);                    // default security attribute 
 
         if (pipe == INVALID_HANDLE_VALUE) {
-            wprintf(L"CreateNamedPipe failed, GLE=%d.\n", GetLastError());
+            wprintf(L"CreateNamedPipe failed (err %d).\n", GetLastError());
             return -1;
         }
 
@@ -53,7 +53,7 @@ int main() {
                 &threadId);      // returns thread ID 
 
             if (thread == NULL) {
-                wprintf(L"CreateThread failed, GLE=%d.\n", GetLastError());
+                wprintf(L"CreateThread failed (err %d).\n", GetLastError());
                 return -1;
             }
 
@@ -98,7 +98,7 @@ DWORD WINAPI InstanceThread(void* lpvParam)
             if (GetLastError() == ERROR_BROKEN_PIPE) {
                 wprintf(L"InstanceThread: client disconnected.\n");
             } else {
-                wprintf(L"InstanceThread ReadFile failed, GLE=%d.\n", GetLastError());
+                wprintf(L"InstanceThread ReadFile failed (err %d).\n", GetLastError());
             }
             break;
         }
@@ -128,7 +128,7 @@ DWORD WINAPI InstanceThread(void* lpvParam)
             NULL);        // not overlapped I/O 
 
         if (!fSuccess || cbReplyBytes != cbWritten) {
-            wprintf(L"InstanceThread WriteFile failed, GLE=%d.\n", GetLastError());
+            wprintf(L"InstanceThread WriteFile failed (err %d).\n", GetLastError());
             break;
         }
     }
