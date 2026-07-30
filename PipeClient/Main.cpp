@@ -7,8 +7,8 @@
 #include "../PipeMessage.hpp"
 
 
-int wmain(int argc, wchar_t* argv[]) {
-    std::wstring message = L"Default message from client.";
+int main(int argc, char* argv[]) {
+    std::string message = "Default message from client.";
     if (argc > 1)
         message = argv[1];
 
@@ -55,7 +55,7 @@ int wmain(int argc, wchar_t* argv[]) {
         return -1;
     }
 
-    wprintf(L"Sending message: %s\n", message.c_str());
+    wprintf(L"Sending message: %hs\n", message.c_str());
 
     DWORD cbWritten = 0;
     fSuccess = WriteFile(
@@ -84,7 +84,7 @@ int wmain(int argc, wchar_t* argv[]) {
         if (!fSuccess && GetLastError() != ERROR_MORE_DATA)
             break;
 
-        wprintf(L"Reply: %s\n", replyBuf);
+        wprintf(L"Reply: %hs\n", replyBuf);
     } while (!fSuccess);  // repeat loop if ERROR_MORE_DATA 
 
     if (!fSuccess) {
