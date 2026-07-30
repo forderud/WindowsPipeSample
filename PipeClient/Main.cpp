@@ -44,10 +44,10 @@ int wmain(int argc, wchar_t* argv[]) {
     }
 
     // The pipe connected; change to message-read mode. 
-    DWORD dwMode = PIPE_READMODE_MESSAGE;
+    DWORD mode = PIPE_READMODE_MESSAGE;
     BOOL fSuccess = SetNamedPipeHandleState(
         hPipe,    // pipe handle 
-        &dwMode,  // new pipe mode 
+        &mode,    // new pipe mode 
         NULL,     // don't set maximum bytes 
         NULL);    // don't set maximum time 
     if (!fSuccess) {
