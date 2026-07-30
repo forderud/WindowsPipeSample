@@ -36,10 +36,10 @@ int main() {
         // Wait for the client to connect; if it succeeds, 
         // the function returns a nonzero value. If the function
         // returns zero, GetLastError returns ERROR_PIPE_CONNECTED. 
-        BOOL fConnected = ConnectNamedPipe(pipe, NULL) ?
+        BOOL connected = ConnectNamedPipe(pipe, NULL) ?
             TRUE : (GetLastError() == ERROR_PIPE_CONNECTED);
 
-        if (fConnected) {
+        if (connected) {
             printf("Client connected, creating a processing thread.\n");
 
             // Create a thread for this client. 
