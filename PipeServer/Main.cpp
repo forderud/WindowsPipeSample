@@ -148,12 +148,13 @@ DWORD WINAPI InstanceThread(void* lpvParam)
 // of an instance thread. Keep in mind the main thread will continue to wait for
 // and receive other client connections while the instance thread is working.
 VOID GetAnswerToRequest(const std::vector<BUF_TYPE>& pchRequest, std::vector<BUF_TYPE>& pchReply) {
-    wprintf(L"Client Request String: %hs\n", pchRequest.data());
+    wprintf(L"Client Request: %hs\n", pchRequest.data());
 
-    // Check the outgoing message to make sure it's not too long for the buffer.
-    if (FAILED(StringCchCopyA(pchReply.data(), BUF_SIZE, "default answer from server"))) {
+    // copy reply to output buffer
+    HRESULT hr = StringCchCopyA(pchReply.data(), BUF_SIZE, "default answer from server");
+    if (FAILED(hr)) {
         pchReply.clear();
-        printf("StringCchCopy failed, no outgoing message.\n");
+        printf("ERROR: Output buffer too small.\n");
         return;
     }
     pchReply.resize((strlen(pchReply.data()) + 1)); // add zero termination
