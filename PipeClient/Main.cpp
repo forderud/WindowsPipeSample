@@ -55,15 +55,13 @@ int wmain(int argc, wchar_t* argv[]) {
         return -1;
     }
 
-    // Send a message to the pipe server. 
-    DWORD cbToWrite = (DWORD)(lpvMessage.length() + 1)*sizeof(BUF_TYPE);
-    wprintf(L"Sending %d byte message: %s\n", cbToWrite, lpvMessage.c_str());
+    wprintf(L"Sending message: %s\n", lpvMessage.c_str());
 
     DWORD cbWritten = 0;
     fSuccess = WriteFile(
         hPipe,           // pipe handle 
         lpvMessage.c_str(),// message 
-        cbToWrite,       // message length 
+        (DWORD)(lpvMessage.length() + 1) * sizeof(BUF_TYPE), // message length 
         &cbWritten,      // bytes written 
         NULL);           // not overlapped 
 
@@ -71,8 +69,6 @@ int wmain(int argc, wchar_t* argv[]) {
         wprintf(L"WriteFile to pipe failed. GLE=%d\n", GetLastError());
         return -1;
     }
-
-    printf("\nMessage sent to server.\n");
 
     do {
         // Read from the pipe.
@@ -88,7 +84,7 @@ int wmain(int argc, wchar_t* argv[]) {
         if (!fSuccess && GetLastError() != ERROR_MORE_DATA)
             break;
 
-        wprintf(L"Reply from server: %s\n", chBuf);
+        wprintf(L"Reply: %s\n", chBuf);
     } while (!fSuccess);  // repeat loop if ERROR_MORE_DATA 
 
     if (!fSuccess) {
