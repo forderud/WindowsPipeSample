@@ -95,8 +95,7 @@ int wmain(int argc, wchar_t* argv[]) {
         return -1;
     }
 
-    printf("\n<End of message, press ENTER to terminate connection and exit>");
-    _getch();
+    wprintf(L"\nEnd of message.\n");
 
     CloseHandle(hPipe);
 
