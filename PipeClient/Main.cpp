@@ -3,11 +3,12 @@
 #include <stdio.h>
 #include <conio.h>
 #include <tchar.h>
+#include <string>
 #include "../PipeMessage.hpp"
 
 
 int wmain(int argc, wchar_t* argv[]) {
-    const BUF_TYPE* lpvMessage = L"Default message from client.";
+    std::wstring lpvMessage = L"Default message from client.";
     if (argc > 1)
         lpvMessage = argv[1];
 
@@ -55,13 +56,13 @@ int wmain(int argc, wchar_t* argv[]) {
     }
 
     // Send a message to the pipe server. 
-    DWORD cbToWrite = (lstrlen(lpvMessage) + 1)*sizeof(BUF_TYPE);
-    wprintf(L"Sending %d byte message: \"%s\"\n", cbToWrite, lpvMessage);
+    DWORD cbToWrite = (DWORD)(lpvMessage.length() + 1)*sizeof(BUF_TYPE);
+    wprintf(L"Sending %d byte message: \"%s\"\n", cbToWrite, lpvMessage.c_str());
 
     DWORD cbWritten = 0;
     fSuccess = WriteFile(
         hPipe,           // pipe handle 
-        lpvMessage,      // message 
+        lpvMessage.c_str(),// message 
         cbToWrite,       // message length 
         &cbWritten,      // bytes written 
         NULL);           // not overlapped 
