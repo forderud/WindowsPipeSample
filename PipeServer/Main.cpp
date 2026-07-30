@@ -6,8 +6,8 @@
 #include "../PipeMessage.hpp"
 
 
-DWORD WINAPI InstanceThread(void*);
-VOID GetAnswerToRequest(LPTSTR, LPTSTR, LPDWORD);
+DWORD WINAPI InstanceThread(void* lpvParam);
+VOID GetAnswerToRequest(BUF_TYPE*, BUF_TYPE*, DWORD*);
 
 int wmain() {
     // The main loop creates an instance of the named pipe and 
@@ -147,7 +147,7 @@ DWORD WINAPI InstanceThread(void* lpvParam)
 // would put the actual client request processing code that runs in the context
 // of an instance thread. Keep in mind the main thread will continue to wait for
 // and receive other client connections while the instance thread is working.
-VOID GetAnswerToRequest(LPTSTR pchRequest, LPTSTR pchReply, LPDWORD pchBytes) {
+VOID GetAnswerToRequest(BUF_TYPE* pchRequest, BUF_TYPE* pchReply, DWORD* pchBytes) {
     wprintf(L"Client Request String:\"%s\"\n", pchRequest);
 
     // Check the outgoing message to make sure it's not too long for the buffer.
