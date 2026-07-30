@@ -151,5 +151,5 @@ DWORD WINAPI InstanceThread(void* lpvParam)
     CloseHandle(pipe);
 
     printf("InstanceThread exiting.\n");
-    return 1;
+    return 0;
 }
