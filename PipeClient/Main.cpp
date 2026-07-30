@@ -8,9 +8,9 @@
 
 
 int wmain(int argc, wchar_t* argv[]) {
-    std::wstring lpvMessage = L"Default message from client.";
+    std::wstring message = L"Default message from client.";
     if (argc > 1)
-        lpvMessage = argv[1];
+        message = argv[1];
 
     // Try to open a named pipe; wait for it, if necessary. 
     HANDLE hPipe = nullptr;
@@ -55,13 +55,13 @@ int wmain(int argc, wchar_t* argv[]) {
         return -1;
     }
 
-    wprintf(L"Sending message: %s\n", lpvMessage.c_str());
+    wprintf(L"Sending message: %s\n", message.c_str());
 
     DWORD cbWritten = 0;
     fSuccess = WriteFile(
         hPipe,           // pipe handle 
-        lpvMessage.c_str(),// message 
-        (DWORD)(lpvMessage.length() + 1) * sizeof(BUF_TYPE), // message length 
+        message.c_str(),// message 
+        (DWORD)(message.length() + 1) * sizeof(BUF_TYPE), // message length 
         &cbWritten,      // bytes written 
         NULL);           // not overlapped 
 
@@ -72,11 +72,11 @@ int wmain(int argc, wchar_t* argv[]) {
 
     do {
         // Read from the pipe.
-        BUF_TYPE chBuf[BUF_SIZE];
+        BUF_TYPE replyBuf[BUF_SIZE];
         DWORD  cbRead = 0;
         fSuccess = ReadFile(
             hPipe,    // pipe handle 
-            chBuf,    // buffer to receive reply 
+            replyBuf,    // buffer to receive reply 
             BUF_SIZE*sizeof(BUF_TYPE), // size of buffer 
             &cbRead,  // number of bytes read 
             NULL);    // not overlapped 
@@ -84,7 +84,7 @@ int wmain(int argc, wchar_t* argv[]) {
         if (!fSuccess && GetLastError() != ERROR_MORE_DATA)
             break;
 
-        wprintf(L"Reply: %s\n", chBuf);
+        wprintf(L"Reply: %s\n", replyBuf);
     } while (!fSuccess);  // repeat loop if ERROR_MORE_DATA 
 
     if (!fSuccess) {
