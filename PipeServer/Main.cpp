@@ -7,7 +7,6 @@
 
 
 DWORD WINAPI InstanceThread(void* lpvParam);
-VOID GetAnswerToRequest(const std::vector<BUF_TYPE>&, std::vector<BUF_TYPE>&);
 
 int main() {
     // The main loop creates an instance of the named pipe and 
@@ -113,7 +112,18 @@ DWORD WINAPI InstanceThread(void* lpvParam)
         }
 
         // Process the incoming message.
-        GetAnswerToRequest(requestBuf, replyBuf);
+        wprintf(L"Client Request: %hs\n", requestBuf.data());
+
+        // copy reply to output buffer
+        HRESULT hr = StringCchCopyA(replyBuf.data(), BUF_SIZE, "default answer from server");
+        if (FAILED(hr)) {
+            replyBuf.clear();
+            printf("ERROR: Output buffer too small.\n");
+            return 1;
+        }
+        replyBuf.resize((strlen(replyBuf.data()) + 1)); // add zero termination
+
+
         DWORD cbReplyBytes = (DWORD)replyBuf.size()*sizeof(BUF_TYPE);
 
         // Write the reply to the pipe.
@@ -140,22 +150,4 @@ DWORD WINAPI InstanceThread(void* lpvParam)
 
     printf("InstanceThread exiting.\n");
     return 1;
-}
-
-// This routine is a simple function to print the client request to the console
-// and populate the reply buffer with a default data string. This is where you
-// would put the actual client request processing code that runs in the context
-// of an instance thread. Keep in mind the main thread will continue to wait for
-// and receive other client connections while the instance thread is working.
-VOID GetAnswerToRequest(const std::vector<BUF_TYPE>& pchRequest, std::vector<BUF_TYPE>& pchReply) {
-    wprintf(L"Client Request: %hs\n", pchRequest.data());
-
-    // copy reply to output buffer
-    HRESULT hr = StringCchCopyA(pchReply.data(), BUF_SIZE, "default answer from server");
-    if (FAILED(hr)) {
-        pchReply.clear();
-        printf("ERROR: Output buffer too small.\n");
-        return;
-    }
-    pchReply.resize((strlen(pchReply.data()) + 1)); // add zero termination
 }
