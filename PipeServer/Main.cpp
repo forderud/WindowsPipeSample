@@ -73,8 +73,8 @@ DWORD WINAPI InstanceThread(void* lpvParam)
 // of this procedure to run concurrently, depending on the number of incoming
 // client connections.
 {
-    std::vector<BUF_TYPE> pchRequest(BUF_SIZE);
-    std::vector<BUF_TYPE> pchReply(BUF_SIZE);
+    std::vector<BUF_TYPE> requestBuf(BUF_SIZE);
+    std::vector<BUF_TYPE> replyBuf(BUF_SIZE);
 
     // Do some extra error checking since the app will keep running even if this
     // thread fails.
@@ -98,7 +98,7 @@ DWORD WINAPI InstanceThread(void* lpvParam)
         DWORD cbBytesRead = 0;
         BOOL fSuccess = ReadFile(
             hPipe,        // handle to pipe 
-            pchRequest.data(), // buffer to receive data 
+            requestBuf.data(), // buffer to receive data 
             BUF_SIZE*sizeof(BUF_TYPE), // size of buffer 
             &cbBytesRead, // number of bytes read 
             NULL);        // not overlapped I/O 
@@ -113,14 +113,14 @@ DWORD WINAPI InstanceThread(void* lpvParam)
         }
 
         // Process the incoming message.
-        GetAnswerToRequest(pchRequest, pchReply);
-        DWORD cbReplyBytes = (DWORD)pchReply.size()*sizeof(BUF_TYPE);
+        GetAnswerToRequest(requestBuf, replyBuf);
+        DWORD cbReplyBytes = (DWORD)replyBuf.size()*sizeof(BUF_TYPE);
 
         // Write the reply to the pipe.
         DWORD cbWritten = 0;
         fSuccess = WriteFile(
             hPipe,        // handle to pipe 
-            pchReply.data(), // buffer to write from 
+            replyBuf.data(), // buffer to write from 
             cbReplyBytes, // number of bytes to write 
             &cbWritten,   // number of bytes written 
             NULL);        // not overlapped I/O 
