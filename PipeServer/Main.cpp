@@ -7,7 +7,7 @@
 
 
 DWORD WINAPI InstanceThread(void* lpvParam);
-VOID GetAnswerToRequest(BUF_TYPE*, BUF_TYPE*, DWORD*);
+VOID GetAnswerToRequest(const std::vector<BUF_TYPE>&, std::vector<BUF_TYPE>&);
 
 int wmain() {
     // The main loop creates an instance of the named pipe and 
@@ -113,8 +113,8 @@ DWORD WINAPI InstanceThread(void* lpvParam)
         }
 
         // Process the incoming message.
-        DWORD cbReplyBytes = 0;
-        GetAnswerToRequest(pchRequest.data(), pchReply.data(), &cbReplyBytes);
+        GetAnswerToRequest(pchRequest, pchReply);
+        DWORD cbReplyBytes = (DWORD)pchReply.size()*sizeof(BUF_TYPE);
 
         // Write the reply to the pipe.
         DWORD cbWritten = 0;
@@ -147,15 +147,14 @@ DWORD WINAPI InstanceThread(void* lpvParam)
 // would put the actual client request processing code that runs in the context
 // of an instance thread. Keep in mind the main thread will continue to wait for
 // and receive other client connections while the instance thread is working.
-VOID GetAnswerToRequest(BUF_TYPE* pchRequest, BUF_TYPE* pchReply, DWORD* pchBytes) {
-    wprintf(L"Client Request String: %s\n", pchRequest);
+VOID GetAnswerToRequest(const std::vector<BUF_TYPE>& pchRequest, std::vector<BUF_TYPE>& pchReply) {
+    wprintf(L"Client Request String: %s\n", pchRequest.data());
 
     // Check the outgoing message to make sure it's not too long for the buffer.
-    if (FAILED(StringCchCopyW(pchReply, BUF_SIZE, L"default answer from server"))) {
-        *pchBytes = 0;
-        pchReply[0] = 0;
+    if (FAILED(StringCchCopyW(pchReply.data(), BUF_SIZE, L"default answer from server"))) {
+        pchReply.clear();
         printf("StringCchCopy failed, no outgoing message.\n");
         return;
     }
-    *pchBytes = (lstrlenW(pchReply) + 1)*sizeof(BUF_TYPE);
+    pchReply.resize((lstrlenW(pchReply.data()) + 1)); // add zero termination
 }
