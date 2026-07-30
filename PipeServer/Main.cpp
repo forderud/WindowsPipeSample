@@ -148,14 +148,14 @@ DWORD WINAPI InstanceThread(void* lpvParam)
 // of an instance thread. Keep in mind the main thread will continue to wait for
 // and receive other client connections while the instance thread is working.
 VOID GetAnswerToRequest(BUF_TYPE* pchRequest, BUF_TYPE* pchReply, DWORD* pchBytes) {
-    wprintf(L"Client Request String:\"%s\"\n", pchRequest);
+    wprintf(L"Client Request String: %s\n", pchRequest);
 
     // Check the outgoing message to make sure it's not too long for the buffer.
-    if (FAILED(StringCchCopy(pchReply, BUF_SIZE, L"default answer from server"))) {
+    if (FAILED(StringCchCopyW(pchReply, BUF_SIZE, L"default answer from server"))) {
         *pchBytes = 0;
         pchReply[0] = 0;
         printf("StringCchCopy failed, no outgoing message.\n");
         return;
     }
-    *pchBytes = (lstrlen(pchReply) + 1)*sizeof(BUF_TYPE);
+    *pchBytes = (lstrlenW(pchReply) + 1)*sizeof(BUF_TYPE);
 }

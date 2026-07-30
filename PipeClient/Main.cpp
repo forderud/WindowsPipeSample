@@ -57,7 +57,7 @@ int wmain(int argc, wchar_t* argv[]) {
 
     // Send a message to the pipe server. 
     DWORD cbToWrite = (DWORD)(lpvMessage.length() + 1)*sizeof(BUF_TYPE);
-    wprintf(L"Sending %d byte message: \"%s\"\n", cbToWrite, lpvMessage.c_str());
+    wprintf(L"Sending %d byte message: %s\n", cbToWrite, lpvMessage.c_str());
 
     DWORD cbWritten = 0;
     fSuccess = WriteFile(
@@ -72,7 +72,7 @@ int wmain(int argc, wchar_t* argv[]) {
         return -1;
     }
 
-    printf("\nMessage sent to server, receiving reply as follows:\n");
+    printf("\nMessage sent to server.\n");
 
     do {
         // Read from the pipe.
@@ -88,7 +88,7 @@ int wmain(int argc, wchar_t* argv[]) {
         if (!fSuccess && GetLastError() != ERROR_MORE_DATA)
             break;
 
-        wprintf(L"\"%s\"\n", chBuf);
+        wprintf(L"Reply from server: %s\n", chBuf);
     } while (!fSuccess);  // repeat loop if ERROR_MORE_DATA 
 
     if (!fSuccess) {
