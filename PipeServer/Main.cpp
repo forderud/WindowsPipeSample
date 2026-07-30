@@ -87,8 +87,7 @@ DWORD WINAPI InstanceThread(void* lpvParam)
         // Read client requests from the pipe. This simplistic code only allows messages
         // up to BUFSIZE characters in length.
         DWORD cbBytesRead = 0;
-        BOOL fSuccess = ReadFile(
-            pipe,
+        BOOL fSuccess = ReadFile(pipe,
             requestBuf.data(), // buffer to receive data 
             BUF_SIZE,     // size of buffer 
             &cbBytesRead, // number of bytes read 
@@ -120,8 +119,7 @@ DWORD WINAPI InstanceThread(void* lpvParam)
 
         // Write the reply to the pipe.
         DWORD cbWritten = 0;
-        fSuccess = WriteFile(
-            pipe,
+        fSuccess = WriteFile(pipe,
             replyBuf.data(), // buffer to write from 
             cbReplyBytes, // number of bytes to write 
             &cbWritten,   // number of bytes written 

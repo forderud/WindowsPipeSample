@@ -45,8 +45,7 @@ int main(int argc, char* argv[]) {
 
     // The pipe connected; change to message-read mode. 
     DWORD mode = PIPE_READMODE_MESSAGE;
-    BOOL fSuccess = SetNamedPipeHandleState(
-        pipe,    // pipe handle 
+    BOOL fSuccess = SetNamedPipeHandleState(pipe,
         &mode,    // new pipe mode 
         NULL,     // don't set maximum bytes 
         NULL);    // don't set maximum time 
@@ -58,8 +57,7 @@ int main(int argc, char* argv[]) {
     wprintf(L"Sending message: %hs\n", message.c_str());
 
     DWORD cbWritten = 0;
-    fSuccess = WriteFile(
-        pipe,
+    fSuccess = WriteFile(pipe,
         message.c_str(),// message 
         (DWORD)(message.length() + 1), // message length 
         &cbWritten,      // bytes written 
@@ -74,8 +72,7 @@ int main(int argc, char* argv[]) {
         // Read from the pipe.
         char replyBuf[BUF_SIZE];
         DWORD  cbRead = 0;
-        fSuccess = ReadFile(
-            pipe,
+        fSuccess = ReadFile(pipe,
             replyBuf, // buffer to receive reply 
             BUF_SIZE, // size of buffer 
             &cbRead,  // number of bytes read 
