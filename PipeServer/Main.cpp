@@ -43,23 +43,25 @@ int main() {
             printf("Client connected, creating a processing thread.\n");
 
             // Create a thread for this client. 
-            DWORD  dwThreadId = 0;
-            HANDLE hThread = CreateThread(
-                NULL,              // no security attribute 
-                0,                 // default stack size 
-                InstanceThread,    // thread proc
-                hPipe,             // thread parameter 
-                0,                 // not suspended 
-                &dwThreadId);      // returns thread ID 
+            DWORD  threadId = 0;
+            HANDLE thread = CreateThread(
+                NULL,            // no security attribute 
+                0,               // default stack size 
+                InstanceThread,  // thread proc
+                hPipe,           // thread parameter 
+                0,               // not suspended 
+                &threadId);      // returns thread ID 
 
-            if (hThread == NULL) {
+            if (thread == NULL) {
                 wprintf(L"CreateThread failed, GLE=%d.\n", GetLastError());
                 return -1;
             }
-            else CloseHandle(hThread);
-        } else
+
+            CloseHandle(thread);
+        } else {
             // The client could not connect, so close the pipe. 
             CloseHandle(hPipe);
+        }
     }
 
     return 0;
