@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
 
         // Exit if other error than ERROR_PIPE_BUSY
         if (GetLastError() != ERROR_PIPE_BUSY) {
-            wprintf(L"Could not open pipe. GLE=%d\n", GetLastError());
+            wprintf(L"Could not open pipe (err %d)\n", GetLastError());
             return -1;
         }
         // pipe is busy, so wait for 20 seconds before retrying
@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
         NULL,     // don't set maximum bytes 
         NULL);    // don't set maximum time 
     if (!fSuccess) {
-        wprintf(L"SetNamedPipeHandleState failed. GLE=%d\n", GetLastError());
+        wprintf(L"SetNamedPipeHandleState failed (err %d)\n", GetLastError());
         return -1;
     }
 
@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
         NULL);           // not overlapped 
 
     if (!fSuccess) {
-        wprintf(L"WriteFile to pipe failed. GLE=%d\n", GetLastError());
+        wprintf(L"WriteFile to pipe failed (err %d)\n", GetLastError());
         return -1;
     }
 
@@ -88,7 +88,7 @@ int main(int argc, char* argv[]) {
     } while (!fSuccess);  // repeat loop if ERROR_MORE_DATA 
 
     if (!fSuccess) {
-        wprintf(L"ReadFile from pipe failed. GLE=%d\n", GetLastError());
+        wprintf(L"ReadFile from pipe failed (err %d)\n", GetLastError());
         return -1;
     }
 
