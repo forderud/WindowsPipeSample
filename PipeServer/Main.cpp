@@ -16,7 +16,7 @@ int main() {
     // next client connect request. It is an infinite loop.
     for (;;) {
         wprintf(L"\nPipe Server: Main thread awaiting client connection on %s\n", PIPE_NAME);
-        HANDLE hPipe = CreateNamedPipe(
+        HANDLE pipe = CreateNamedPipe(
             PIPE_NAME,                // pipe name 
             PIPE_ACCESS_DUPLEX,       // read/write access 
             PIPE_TYPE_MESSAGE |       // message type pipe 
@@ -28,7 +28,7 @@ int main() {
             0,                        // client time-out 
             NULL);                    // default security attribute 
 
-        if (hPipe == INVALID_HANDLE_VALUE) {
+        if (pipe == INVALID_HANDLE_VALUE) {
             wprintf(L"CreateNamedPipe failed, GLE=%d.\n", GetLastError());
             return -1;
         }
@@ -36,7 +36,7 @@ int main() {
         // Wait for the client to connect; if it succeeds, 
         // the function returns a nonzero value. If the function
         // returns zero, GetLastError returns ERROR_PIPE_CONNECTED. 
-        BOOL fConnected = ConnectNamedPipe(hPipe, NULL) ?
+        BOOL fConnected = ConnectNamedPipe(pipe, NULL) ?
             TRUE : (GetLastError() == ERROR_PIPE_CONNECTED);
 
         if (fConnected) {
@@ -48,7 +48,7 @@ int main() {
                 NULL,            // no security attribute 
                 0,               // default stack size 
                 InstanceThread,  // thread proc
-                hPipe,           // thread parameter 
+                pipe,            // thread parameter 
                 0,               // not suspended 
                 &threadId);      // returns thread ID 
 
@@ -60,7 +60,7 @@ int main() {
             CloseHandle(thread);
         } else {
             // The client could not connect, so close the pipe. 
-            CloseHandle(hPipe);
+            CloseHandle(pipe);
         }
     }
 
@@ -90,7 +90,7 @@ DWORD WINAPI InstanceThread(void* lpvParam)
     printf("InstanceThread created, receiving and processing messages.\n");
 
     // The thread's parameter is a handle to a pipe object instance. 
-    HANDLE hPipe = (HANDLE)lpvParam;
+    HANDLE pipe = (HANDLE)lpvParam;
 
     // Loop until done reading
     while (1) {
@@ -98,7 +98,7 @@ DWORD WINAPI InstanceThread(void* lpvParam)
         // up to BUFSIZE characters in length.
         DWORD cbBytesRead = 0;
         BOOL fSuccess = ReadFile(
-            hPipe,        // handle to pipe 
+            pipe,              // handle to pipe 
             requestBuf.data(), // buffer to receive data 
             BUF_SIZE*sizeof(BUF_TYPE), // size of buffer 
             &cbBytesRead, // number of bytes read 
@@ -131,7 +131,7 @@ DWORD WINAPI InstanceThread(void* lpvParam)
         // Write the reply to the pipe.
         DWORD cbWritten = 0;
         fSuccess = WriteFile(
-            hPipe,        // handle to pipe 
+            pipe,         // handle to pipe 
             replyBuf.data(), // buffer to write from 
             cbReplyBytes, // number of bytes to write 
             &cbWritten,   // number of bytes written 
@@ -146,9 +146,9 @@ DWORD WINAPI InstanceThread(void* lpvParam)
     // Flush the pipe to allow the client to read the pipe's contents 
     // before disconnecting. Then disconnect the pipe, and close the 
     // handle to this pipe instance. 
-    FlushFileBuffers(hPipe);
-    DisconnectNamedPipe(hPipe);
-    CloseHandle(hPipe);
+    FlushFileBuffers(pipe);
+    DisconnectNamedPipe(pipe);
+    CloseHandle(pipe);
 
     printf("InstanceThread exiting.\n");
     return 1;
