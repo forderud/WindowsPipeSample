@@ -75,12 +75,12 @@ int wmain(int argc, wchar_t* argv[]) {
 
     do {
         // Read from the pipe.
-        wchar_t chBuf[BUFSIZE];
+        wchar_t chBuf[BUF_SIZE];
         DWORD  cbRead = 0;
         fSuccess = ReadFile(
             hPipe,    // pipe handle 
             chBuf,    // buffer to receive reply 
-            BUFSIZE * sizeof(wchar_t),  // size of buffer 
+            BUF_SIZE*sizeof(wchar_t),  // size of buffer 
             &cbRead,  // number of bytes read 
             NULL);    // not overlapped 
 

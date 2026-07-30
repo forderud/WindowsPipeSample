@@ -25,8 +25,8 @@ int wmain() {
             PIPE_READMODE_MESSAGE |   // message-read mode 
             PIPE_WAIT,                // blocking mode 
             PIPE_UNLIMITED_INSTANCES, // max. instances  
-            BUFSIZE,                  // output buffer size 
-            BUFSIZE,                  // input buffer size 
+            BUF_SIZE,                 // output buffer size 
+            BUF_SIZE,                 // input buffer size 
             0,                        // client time-out 
             NULL);                    // default security attribute 
 
@@ -74,8 +74,8 @@ DWORD WINAPI InstanceThread(void* lpvParam)
 // of this procedure to run concurrently, depending on the number of incoming
 // client connections.
 {
-    std::vector<TCHAR> pchRequest(BUFSIZE);
-    std::vector<TCHAR> pchReply(BUFSIZE);
+    std::vector<TCHAR> pchRequest(BUF_SIZE);
+    std::vector<TCHAR> pchReply(BUF_SIZE);
 
     // Do some extra error checking since the app will keep running even if this
     // thread fails.
@@ -100,7 +100,7 @@ DWORD WINAPI InstanceThread(void* lpvParam)
         BOOL fSuccess = ReadFile(
             hPipe,        // handle to pipe 
             pchRequest.data(), // buffer to receive data 
-            BUFSIZE * sizeof(TCHAR), // size of buffer 
+            BUF_SIZE*sizeof(TCHAR), // size of buffer 
             &cbBytesRead, // number of bytes read 
             NULL);        // not overlapped I/O 
 
@@ -152,7 +152,7 @@ VOID GetAnswerToRequest(LPTSTR pchRequest, LPTSTR pchReply, LPDWORD pchBytes) {
     wprintf(L"Client Request String:\"%s\"\n", pchRequest);
 
     // Check the outgoing message to make sure it's not too long for the buffer.
-    if (FAILED(StringCchCopy(pchReply, BUFSIZE, L"default answer from server"))) {
+    if (FAILED(StringCchCopy(pchReply, BUF_SIZE, L"default answer from server"))) {
         *pchBytes = 0;
         pchReply[0] = 0;
         printf("StringCchCopy failed, no outgoing message.\n");
