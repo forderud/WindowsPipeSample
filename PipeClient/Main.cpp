@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
 
     // Try to open a named pipe; wait for it, if necessary. 
     HANDLE pipe = nullptr;
-    while (1) {
+    for (;;) {
         pipe = CreateFile(
             PIPE_NAME,      // pipe name 
             GENERIC_READ |  // read and write access 
