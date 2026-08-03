@@ -86,14 +86,14 @@ DWORD WINAPI InstanceThread(void* lpvParam)
     for (;;) {
         // Read client requests from the pipe. This simplistic code only allows messages
         // up to BUFSIZE characters in length.
-        DWORD cbBytesRead = 0;
+        DWORD bytesRead = 0;
         BOOL fSuccess = ReadFile(pipe,
             requestBuf.data(), // buffer to receive data 
             BUF_SIZE,     // size of buffer 
-            &cbBytesRead, // number of bytes read 
+            &bytesRead, // number of bytes read 
             NULL);        // not overlapped I/O 
 
-        if (!fSuccess || cbBytesRead == 0) {
+        if (!fSuccess || bytesRead == 0) {
             if (GetLastError() == ERROR_BROKEN_PIPE) {
                 wprintf(L"InstanceThread: client disconnected.\n");
             } else {
@@ -106,7 +106,7 @@ DWORD WINAPI InstanceThread(void* lpvParam)
         wprintf(L"Client Request: %hs\n", requestBuf.data());
 
         // copy reply to output buffer
-        HRESULT hr = StringCchCopyA(replyBuf.data(), BUF_SIZE, "default answer from server");
+        HRESULT hr = StringCchCopyA(replyBuf.data(), BUF_SIZE, "Answer from server");
         if (FAILED(hr)) {
             replyBuf.clear();
             printf("ERROR: Output buffer too small.\n");
@@ -116,14 +116,14 @@ DWORD WINAPI InstanceThread(void* lpvParam)
 
 
         // Write the reply to the pipe.
-        DWORD cbWritten = 0;
+        DWORD bytesWritten = 0;
         fSuccess = WriteFile(pipe,
             replyBuf.data(), // buffer to write from 
             (DWORD)replyBuf.size(), // number of bytes to write 
-            &cbWritten,   // number of bytes written 
+            &bytesWritten,   // number of bytes written 
             NULL);        // not overlapped I/O 
 
-        if (!fSuccess || replyBuf.size() != cbWritten) {
+        if (!fSuccess || replyBuf.size() != bytesWritten) {
             wprintf(L"InstanceThread WriteFile failed (err %d).\n", GetLastError());
             break;
         }
