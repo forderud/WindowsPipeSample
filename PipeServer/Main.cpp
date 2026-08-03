@@ -83,7 +83,7 @@ DWORD WINAPI InstanceThread(void* lpvParam)
     HANDLE pipe = (HANDLE)lpvParam;
 
     // Loop until done reading
-    while (1) {
+    for (;;) {
         // Read client requests from the pipe. This simplistic code only allows messages
         // up to BUFSIZE characters in length.
         DWORD cbBytesRead = 0;
