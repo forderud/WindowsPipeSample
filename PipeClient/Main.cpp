@@ -56,11 +56,11 @@ int main(int argc, char* argv[]) {
 
     wprintf(L"Sending message: %hs\n", message.c_str());
 
-    DWORD cbWritten = 0;
+    DWORD bytesWritten = 0;
     fSuccess = WriteFile(pipe,
         message.c_str(),// message 
         (DWORD)(message.length() + 1), // message length 
-        &cbWritten,      // bytes written 
+        &bytesWritten,   // bytes written 
         NULL);           // not overlapped 
 
     if (!fSuccess) {
@@ -69,13 +69,13 @@ int main(int argc, char* argv[]) {
     }
 
     do {
-        // Read from the pipe.
+        // Read from pipe
         char replyBuf[BUF_SIZE];
-        DWORD  cbRead = 0;
+        DWORD  bytesRead = 0;
         fSuccess = ReadFile(pipe,
             replyBuf, // buffer to receive reply 
             BUF_SIZE, // size of buffer 
-            &cbRead,  // number of bytes read 
+            &bytesRead,// number of bytes read 
             NULL);    // not overlapped 
 
         if (!fSuccess && GetLastError() != ERROR_MORE_DATA)
