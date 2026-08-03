@@ -16,7 +16,7 @@ int main() {
     // next client connect request. It is an infinite loop.
     for (;;) {
         wprintf(L"\nPipe Server: Main thread awaiting client connection on %s\n", PIPE_NAME);
-        HANDLE pipe = CreateNamedPipe(
+        HANDLE pipe = CreateNamedPipeW(
             PIPE_NAME,                // pipe name 
             PIPE_ACCESS_DUPLEX,       // read/write access 
             PIPE_TYPE_MESSAGE |       // message type pipe 

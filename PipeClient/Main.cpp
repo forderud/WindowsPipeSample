@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
     // Try to open a named pipe; wait for it, if necessary. 
     HANDLE pipe = nullptr;
     for (;;) {
-        pipe = CreateFile(
+        pipe = CreateFileW(
             PIPE_NAME,      // pipe name 
             GENERIC_READ |  // read and write access 
             GENERIC_WRITE,
@@ -33,9 +33,9 @@ int main(int argc, char* argv[]) {
             wprintf(L"Could not open pipe (err %d)\n", GetLastError());
             return -1;
         }
-        // pipe is busy, so wait for 20 seconds before retrying
-        if (!WaitNamedPipe(PIPE_NAME, 20000)) {
-            printf("Could not open pipe: 20 second wait timed out.");
+        // pipe is busy, so wait for 10 seconds before retrying
+        if (!WaitNamedPipeW(PIPE_NAME, 10000)) {
+            printf("Could not open pipe: 10 second wait timed out.");
             return -1;
         }
 
