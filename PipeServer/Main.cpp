@@ -115,17 +115,15 @@ DWORD WINAPI InstanceThread(void* lpvParam)
         replyBuf.resize((strlen(replyBuf.data()) + 1)); // add zero termination
 
 
-        DWORD cbReplyBytes = (DWORD)replyBuf.size();
-
         // Write the reply to the pipe.
         DWORD cbWritten = 0;
         fSuccess = WriteFile(pipe,
             replyBuf.data(), // buffer to write from 
-            cbReplyBytes, // number of bytes to write 
+            (DWORD)replyBuf.size(), // number of bytes to write 
             &cbWritten,   // number of bytes written 
             NULL);        // not overlapped I/O 
 
-        if (!fSuccess || cbReplyBytes != cbWritten) {
+        if (!fSuccess || replyBuf.size() != cbWritten) {
             wprintf(L"InstanceThread WriteFile failed (err %d).\n", GetLastError());
             break;
         }
