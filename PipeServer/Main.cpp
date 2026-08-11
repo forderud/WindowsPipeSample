@@ -71,13 +71,7 @@ int main() {
     return 0;
 }
 
-DWORD WINAPI InstanceThread(void* threadParam)
-// This routine is a thread processing function to read from and reply to a client
-// via the open pipe connection passed from the main loop. Note this allows
-// the main loop to continue executing, potentially creating more threads of
-// of this procedure to run concurrently, depending on the number of incoming
-// client connections.
-{
+DWORD WINAPI InstanceThread(void* threadParam) {
     printf("InstanceThread created, receiving and processing messages.\n");
 
     HANDLE pipe = (HANDLE)threadParam;
@@ -87,15 +81,13 @@ DWORD WINAPI InstanceThread(void* threadParam)
 
     // Loop until done reading
     for (;;) {
-        // Read client requests from the pipe. This simplistic code only allows messages
-        // up to BUFSIZE characters in length.
+        // Read client requests from the pipe
         DWORD bytesRead = 0;
         BOOL success = ReadFile(pipe,
             requestBuf.data(), // buffer to receive data 
             BUF_SIZE,     // size of buffer 
             &bytesRead, // number of bytes read 
             NULL);        // not overlapped I/O 
-
         if (!success || (bytesRead == 0)) {
             if (GetLastError() == ERROR_BROKEN_PIPE) {
                 wprintf(L"InstanceThread: client disconnected.\n");
@@ -105,7 +97,7 @@ DWORD WINAPI InstanceThread(void* threadParam)
             break;
         }
 
-        // Process the incoming message.
+        // process incoming message
         wprintf(L"Client Request: %hs\n", requestBuf.data());
 
         // copy reply to output buffer
@@ -117,15 +109,13 @@ DWORD WINAPI InstanceThread(void* threadParam)
         }
         replyBuf.resize((strlen(replyBuf.data()) + 1)); // add zero termination
 
-
-        // Write the reply to the pipe.
+        // write reply to pipe
         DWORD bytesWritten = 0;
         success = WriteFile(pipe,
             replyBuf.data(), // buffer to write from 
             (DWORD)replyBuf.size(), // number of bytes to write 
             &bytesWritten,   // number of bytes written 
             NULL);        // not overlapped I/O 
-
         if (!success || (replyBuf.size() != bytesWritten)) {
             wprintf(L"InstanceThread WriteFile failed (err %d).\n", GetLastError());
             break;
