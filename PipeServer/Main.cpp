@@ -63,6 +63,7 @@ int main() {
         }
 
         CloseHandle(thread);
+        // "pipe" closed in InstanceThread function
 
         // wait for next client connection
     }
@@ -70,7 +71,7 @@ int main() {
     return 0;
 }
 
-DWORD WINAPI InstanceThread(void* lpvParam)
+DWORD WINAPI InstanceThread(void* threadParam)
 // This routine is a thread processing function to read from and reply to a client
 // via the open pipe connection passed from the main loop. Note this allows
 // the main loop to continue executing, potentially creating more threads of
@@ -83,7 +84,7 @@ DWORD WINAPI InstanceThread(void* lpvParam)
     std::vector<char> replyBuf(BUF_SIZE);
 
     // The thread's parameter is a handle to a pipe object instance. 
-    HANDLE pipe = (HANDLE)lpvParam;
+    HANDLE pipe = (HANDLE)threadParam;
 
     // Loop until done reading
     for (;;) {
