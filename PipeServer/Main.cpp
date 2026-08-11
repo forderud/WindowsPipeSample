@@ -127,6 +127,6 @@ DWORD WINAPI InstanceThread(void* threadParam) {
     DisconnectNamedPipe(pipe);
     CloseHandle(pipe);
 
-    printf("InstanceThread exiting.\n");
+    printf("Client disconnected.\n");
     return 0;
 }
