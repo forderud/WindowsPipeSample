@@ -15,24 +15,24 @@ int main() {
 
         // Create named pipe
         HANDLE pipe = CreateNamedPipeW(
-            PIPE_NAME,                // pipe name 
-            PIPE_ACCESS_DUPLEX,       // read/write access 
-            PIPE_TYPE_MESSAGE |       // message type pipe 
-            PIPE_READMODE_MESSAGE |   // message-read mode 
-            PIPE_WAIT,                // blocking mode 
-            PIPE_UNLIMITED_INSTANCES, // max. instances  
-            BUF_SIZE,                 // output buffer size 
-            BUF_SIZE,                 // input buffer size 
-            0,                        // client time-out 
-            NULL);                    // default security attribute 
+            PIPE_NAME,                // pipe name
+            PIPE_ACCESS_DUPLEX,       // read/write access
+            PIPE_TYPE_MESSAGE |       // message type pipe
+            PIPE_READMODE_MESSAGE |   // message-read mode
+            PIPE_WAIT,                // blocking mode
+            PIPE_UNLIMITED_INSTANCES, // max. instances
+            BUF_SIZE,                 // output buffer size
+            BUF_SIZE,                 // input buffer size
+            0,                        // client time-out
+            NULL);                    // default security attribute
         if (pipe == INVALID_HANDLE_VALUE) {
             wprintf(L"CreateNamedPipe failed (err %d).\n", GetLastError());
             return -1;
         }
 
-        // Wait for the client to connect; if it succeeds, 
+        // Wait for the client to connect; if it succeeds,
         // the function returns a nonzero value. If the function
-        // returns zero, GetLastError returns ERROR_PIPE_CONNECTED. 
+        // returns zero, GetLastError returns ERROR_PIPE_CONNECTED.
         bool connected = ConnectNamedPipe(pipe, NULL) ?
             true : (GetLastError() == ERROR_PIPE_CONNECTED);
 
@@ -42,12 +42,12 @@ int main() {
             // Create a thread to handle client communication
             DWORD  threadId = 0;
             HANDLE thread = CreateThread(
-                NULL,            // no security attribute 
+                NULL,            // no security attribute
                 0,               // default stack size 
                 InstanceThread,  // thread proc
-                pipe,            // thread parameter 
-                0,               // not suspended 
-                &threadId);      // returns thread ID 
+                pipe,            // thread parameter
+                0,               // not suspended
+                &threadId);      // returns thread ID
 
             if (thread == NULL) {
                 wprintf(L"CreateThread failed (err %d).\n", GetLastError());
@@ -56,7 +56,7 @@ int main() {
 
             CloseHandle(thread);
         } else {
-            // The client could not connect, so close the pipe. 
+            // The client could not connect, so close the pipe.
             CloseHandle(pipe);
         }
 

@@ -17,14 +17,14 @@ int main(int argc, char* argv[]) {
     HANDLE pipe = nullptr;
     for (;;) {
         pipe = CreateFileW(
-            PIPE_NAME,      // pipe name 
-            GENERIC_READ |  // read and write access 
+            PIPE_NAME,      // pipe name
+            GENERIC_READ |  // read and write access
             GENERIC_WRITE,
-            0,              // no sharing 
+            0,              // no sharing
             NULL,           // default security attributes
-            OPEN_EXISTING,  // opens existing pipe 
-            0,              // default attributes 
-            NULL);          // no template file 
+            OPEN_EXISTING,  // opens existing pipe
+            0,              // default attributes
+            NULL);          // no template file
 
         if (pipe != INVALID_HANDLE_VALUE)
             break; // valid handle
@@ -60,9 +60,9 @@ int main(int argc, char* argv[]) {
     DWORD bytesWritten = 0;
     success = WriteFile(pipe,
         message.c_str(),// message 
-        (DWORD)(message.length() + 1), // message length 
-        &bytesWritten,   // bytes written 
-        NULL);           // not overlapped 
+        (DWORD)(message.length() + 1), // message length
+        &bytesWritten,   // bytes written
+        NULL);           // not overlapped
 
     if (!success) {
         wprintf(L"WriteFile to pipe failed (err %d)\n", GetLastError());
@@ -74,16 +74,16 @@ int main(int argc, char* argv[]) {
         char replyBuf[BUF_SIZE]{};
         DWORD bytesRead = 0;
         success = ReadFile(pipe,
-            replyBuf, // buffer to receive reply 
-            BUF_SIZE, // size of buffer 
-            &bytesRead,// number of bytes read 
-            NULL);    // not overlapped 
+            replyBuf, // buffer to receive reply
+            BUF_SIZE, // size of buffer
+            &bytesRead,// number of bytes read
+            NULL);    // not overlapped
 
         if (!success && (GetLastError() != ERROR_MORE_DATA))
             break;
 
         wprintf(L"Reply: %hs\n", replyBuf);
-    } while (!success);  // repeat loop if ERROR_MORE_DATA 
+    } while (!success);  // repeat loop if ERROR_MORE_DATA
 
     if (!success) {
         wprintf(L"ReadFile from pipe failed (err %d)\n", GetLastError());
