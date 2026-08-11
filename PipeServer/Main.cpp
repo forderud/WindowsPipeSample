@@ -74,12 +74,10 @@ int main() {
 DWORD WINAPI InstanceThread(void* threadParam) {
     HANDLE pipe = (HANDLE)threadParam;
 
-    std::vector<char> requestBuf(BUF_SIZE);
-    std::vector<char> replyBuf(BUF_SIZE);
-
     // Loop until done reading
     for (;;) {
         // Read client requests from the pipe
+        std::vector<char> requestBuf(BUF_SIZE);
         DWORD bytesRead = 0;
         BOOL success = ReadFile(pipe,
             requestBuf.data(), // buffer to receive data 
@@ -99,6 +97,7 @@ DWORD WINAPI InstanceThread(void* threadParam) {
         wprintf(L"Client Request: %hs\n", requestBuf.data());
 
         // copy reply to output buffer
+        std::vector<char> replyBuf(BUF_SIZE);
         HRESULT hr = StringCchCopyA(replyBuf.data(), BUF_SIZE, "Answer from server");
         if (FAILED(hr)) {
             replyBuf.clear();
