@@ -6,7 +6,7 @@
 #include "../PipeMessage.hpp"
 
 
-DWORD WINAPI InstanceThread(void* lpvParam);
+DWORD ClientThread(void* lpvParam);
 
 /** Windows pipe server sample. */
 int main() {
@@ -51,7 +51,7 @@ int main() {
         HANDLE thread = CreateThread(
             NULL,            // no security attribute
             0,               // default stack size 
-            InstanceThread,  // thread proc
+            ClientThread,    // thread proc
             pipe,            // thread parameter (transfer ownership)
             0,               // not suspended
             &threadId);
@@ -62,7 +62,7 @@ int main() {
         }
 
         CloseHandle(thread);
-        pipe = NULL; // closed in InstanceThread function
+        pipe = NULL; // closed in ClientThread function
 
         // wait for next client connection
     }
@@ -70,7 +70,7 @@ int main() {
     return 0;
 }
 
-DWORD WINAPI InstanceThread(void* threadParam) {
+DWORD ClientThread(void* threadParam) {
     HANDLE pipe = (HANDLE)threadParam; // acquire ownership
 
     // Loop until done reading
