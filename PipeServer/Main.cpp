@@ -96,7 +96,7 @@ DWORD WINAPI InstanceThread(void* threadParam)
             &bytesRead, // number of bytes read 
             NULL);        // not overlapped I/O 
 
-        if (!success || bytesRead == 0) {
+        if (!success || (bytesRead == 0)) {
             if (GetLastError() == ERROR_BROKEN_PIPE) {
                 wprintf(L"InstanceThread: client disconnected.\n");
             } else {
