@@ -4,6 +4,7 @@
 #include <conio.h>
 #include <tchar.h>
 #include <string>
+#include <vector>
 #include "../PipeMessage.hpp"
 
 
@@ -73,18 +74,18 @@ int main(int argc, char* argv[]) {
 
     do {
         // Read from pipe
-        char replyBuf[MAX_MESSAGE_SIZE]{};
+        std::vector<char> replyBuf(MAX_MESSAGE_SIZE);
         DWORD bytesRead = 0;
         success = ReadFile(pipe,
-            replyBuf, // buffer to receive reply
-            MAX_MESSAGE_SIZE, // size of buffer
+            replyBuf.data(), // buffer to receive reply
+            (DWORD)replyBuf.size(), // size of buffer
             &bytesRead,// number of bytes read
             NULL);    // not overlapped
 
         if (!success && (GetLastError() != ERROR_MORE_DATA))
             break;
 
-        wprintf(L"Received message: %hs\n", replyBuf);
+        wprintf(L"Received message: %hs\n", replyBuf.data());
     } while (!success);  // repeat loop if ERROR_MORE_DATA
 
     if (!success) {
