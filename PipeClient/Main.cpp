@@ -9,7 +9,7 @@
 
 /** Windows pipe client sample. */
 int main(int argc, char* argv[]) {
-    std::string message = "Default message from client.";
+    std::string message = "Some message from client.";
     if (argc > 1)
         message = argv[1];
 
