@@ -8,14 +8,12 @@
 
 DWORD WINAPI InstanceThread(void* lpvParam);
 
+/** Windows pipe server sample. */
 int main() {
-    // The main loop creates an instance of the named pipe and 
-    // then waits for a client to connect to it. When the client 
-    // connects, a thread is created to handle communications 
-    // with that client, and this loop is free to wait for the
-    // next client connect request. It is an infinite loop.
     for (;;) {
         wprintf(L"\nPipe Server: Main thread awaiting client connection on %s\n", PIPE_NAME);
+
+        // Create named pipe
         HANDLE pipe = CreateNamedPipeW(
             PIPE_NAME,                // pipe name 
             PIPE_ACCESS_DUPLEX,       // read/write access 
@@ -27,7 +25,6 @@ int main() {
             BUF_SIZE,                 // input buffer size 
             0,                        // client time-out 
             NULL);                    // default security attribute 
-
         if (pipe == INVALID_HANDLE_VALUE) {
             wprintf(L"CreateNamedPipe failed (err %d).\n", GetLastError());
             return -1;
@@ -36,13 +33,13 @@ int main() {
         // Wait for the client to connect; if it succeeds, 
         // the function returns a nonzero value. If the function
         // returns zero, GetLastError returns ERROR_PIPE_CONNECTED. 
-        BOOL connected = ConnectNamedPipe(pipe, NULL) ?
-            TRUE : (GetLastError() == ERROR_PIPE_CONNECTED);
+        bool connected = ConnectNamedPipe(pipe, NULL) ?
+            true : (GetLastError() == ERROR_PIPE_CONNECTED);
 
         if (connected) {
             printf("Client connected, creating a processing thread.\n");
 
-            // Create a thread for this client. 
+            // Create a thread to handle client communication
             DWORD  threadId = 0;
             HANDLE thread = CreateThread(
                 NULL,            // no security attribute 
@@ -62,6 +59,8 @@ int main() {
             // The client could not connect, so close the pipe. 
             CloseHandle(pipe);
         }
+
+        // continue loop to wait for the next client connection
     }
 
     return 0;
