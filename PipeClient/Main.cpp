@@ -90,8 +90,6 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    wprintf(L"\nEnd of message.\n");
-
     CloseHandle(pipe);
 
     return 0;
