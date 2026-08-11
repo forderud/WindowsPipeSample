@@ -87,13 +87,13 @@ DWORD WINAPI InstanceThread(void* lpvParam)
         // Read client requests from the pipe. This simplistic code only allows messages
         // up to BUFSIZE characters in length.
         DWORD bytesRead = 0;
-        BOOL fSuccess = ReadFile(pipe,
+        BOOL success = ReadFile(pipe,
             requestBuf.data(), // buffer to receive data 
             BUF_SIZE,     // size of buffer 
             &bytesRead, // number of bytes read 
             NULL);        // not overlapped I/O 
 
-        if (!fSuccess || bytesRead == 0) {
+        if (!success || bytesRead == 0) {
             if (GetLastError() == ERROR_BROKEN_PIPE) {
                 wprintf(L"InstanceThread: client disconnected.\n");
             } else {
@@ -117,13 +117,13 @@ DWORD WINAPI InstanceThread(void* lpvParam)
 
         // Write the reply to the pipe.
         DWORD bytesWritten = 0;
-        fSuccess = WriteFile(pipe,
+        success = WriteFile(pipe,
             replyBuf.data(), // buffer to write from 
             (DWORD)replyBuf.size(), // number of bytes to write 
             &bytesWritten,   // number of bytes written 
             NULL);        // not overlapped I/O 
 
-        if (!fSuccess || replyBuf.size() != bytesWritten) {
+        if (!success || replyBuf.size() != bytesWritten) {
             wprintf(L"InstanceThread WriteFile failed (err %d).\n", GetLastError());
             break;
         }
