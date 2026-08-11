@@ -45,11 +45,11 @@ int main(int argc, char* argv[]) {
 
     // The pipe connected; change to message-read mode. 
     DWORD mode = PIPE_READMODE_MESSAGE;
-    BOOL fSuccess = SetNamedPipeHandleState(pipe,
+    BOOL success = SetNamedPipeHandleState(pipe,
         &mode,    // new pipe mode 
         NULL,     // don't set maximum bytes 
         NULL);    // don't set maximum time 
-    if (!fSuccess) {
+    if (!success) {
         wprintf(L"SetNamedPipeHandleState failed (err %d)\n", GetLastError());
         return -1;
     }
@@ -57,34 +57,34 @@ int main(int argc, char* argv[]) {
     wprintf(L"Sending message: %hs\n", message.c_str());
 
     DWORD bytesWritten = 0;
-    fSuccess = WriteFile(pipe,
+    success = WriteFile(pipe,
         message.c_str(),// message 
         (DWORD)(message.length() + 1), // message length 
         &bytesWritten,   // bytes written 
         NULL);           // not overlapped 
 
-    if (!fSuccess) {
+    if (!success) {
         wprintf(L"WriteFile to pipe failed (err %d)\n", GetLastError());
         return -1;
     }
 
     do {
         // Read from pipe
-        char replyBuf[BUF_SIZE];
-        DWORD  bytesRead = 0;
-        fSuccess = ReadFile(pipe,
+        char replyBuf[BUF_SIZE]{};
+        DWORD bytesRead = 0;
+        success = ReadFile(pipe,
             replyBuf, // buffer to receive reply 
             BUF_SIZE, // size of buffer 
             &bytesRead,// number of bytes read 
             NULL);    // not overlapped 
 
-        if (!fSuccess && GetLastError() != ERROR_MORE_DATA)
+        if (!success && GetLastError() != ERROR_MORE_DATA)
             break;
 
         wprintf(L"Reply: %hs\n", replyBuf);
-    } while (!fSuccess);  // repeat loop if ERROR_MORE_DATA 
+    } while (!success);  // repeat loop if ERROR_MORE_DATA 
 
-    if (!fSuccess) {
+    if (!success) {
         wprintf(L"ReadFile from pipe failed (err %d)\n", GetLastError());
         return -1;
     }
