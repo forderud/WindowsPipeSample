@@ -44,6 +44,8 @@ int main(int argc, char* argv[]) {
         continue;
     }
 
+    wprintf(L"Connected to pipe %s\n\n", PIPE_NAME);
+
     // The pipe connected; change to message-read mode. 
     DWORD mode = PIPE_READMODE_MESSAGE;
     BOOL success = SetNamedPipeHandleState(pipe,
@@ -82,7 +84,7 @@ int main(int argc, char* argv[]) {
         if (!success && (GetLastError() != ERROR_MORE_DATA))
             break;
 
-        wprintf(L"Reply: %hs\n", replyBuf);
+        wprintf(L"Received message: %hs\n", replyBuf);
     } while (!success);  // repeat loop if ERROR_MORE_DATA
 
     if (!success) {
