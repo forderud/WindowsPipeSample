@@ -123,7 +123,7 @@ DWORD WINAPI InstanceThread(void* lpvParam)
             &bytesWritten,   // number of bytes written 
             NULL);        // not overlapped I/O 
 
-        if (!success || replyBuf.size() != bytesWritten) {
+        if (!success || (replyBuf.size() != bytesWritten)) {
             wprintf(L"InstanceThread WriteFile failed (err %d).\n", GetLastError());
             break;
         }

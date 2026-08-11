@@ -78,7 +78,7 @@ int main(int argc, char* argv[]) {
             &bytesRead,// number of bytes read 
             NULL);    // not overlapped 
 
-        if (!success && GetLastError() != ERROR_MORE_DATA)
+        if (!success && (GetLastError() != ERROR_MORE_DATA))
             break;
 
         wprintf(L"Reply: %hs\n", replyBuf);
