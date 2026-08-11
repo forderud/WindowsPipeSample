@@ -72,8 +72,6 @@ int main() {
 }
 
 DWORD WINAPI InstanceThread(void* threadParam) {
-    printf("InstanceThread created, receiving and processing messages.\n");
-
     HANDLE pipe = (HANDLE)threadParam;
 
     std::vector<char> requestBuf(BUF_SIZE);
@@ -90,9 +88,9 @@ DWORD WINAPI InstanceThread(void* threadParam) {
             NULL);        // not overlapped I/O 
         if (!success || (bytesRead == 0)) {
             if (GetLastError() == ERROR_BROKEN_PIPE) {
-                wprintf(L"InstanceThread: client disconnected.\n");
+                wprintf(L"Client disconnected.\n");
             } else {
-                wprintf(L"InstanceThread ReadFile failed (err %d).\n", GetLastError());
+                wprintf(L"ReadFile failed (err %d).\n", GetLastError());
             }
             break;
         }
@@ -117,7 +115,7 @@ DWORD WINAPI InstanceThread(void* threadParam) {
             &bytesWritten,   // number of bytes written 
             NULL);        // not overlapped I/O 
         if (!success || (replyBuf.size() != bytesWritten)) {
-            wprintf(L"InstanceThread WriteFile failed (err %d).\n", GetLastError());
+            wprintf(L"WriteFile failed (err %d).\n", GetLastError());
             break;
         }
     }
@@ -126,7 +124,5 @@ DWORD WINAPI InstanceThread(void* threadParam) {
     FlushFileBuffers(pipe);
     DisconnectNamedPipe(pipe);
     CloseHandle(pipe);
-
-    printf("Client disconnected.\n");
     return 0;
 }
