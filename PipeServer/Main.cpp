@@ -52,7 +52,7 @@ int main() {
             NULL,            // no security attribute
             0,               // default stack size 
             InstanceThread,  // thread proc
-            pipe,            // thread parameter
+            pipe,            // thread parameter (transfer ownership)
             0,               // not suspended
             &threadId);
 
@@ -62,7 +62,7 @@ int main() {
         }
 
         CloseHandle(thread);
-        // "pipe" closed in InstanceThread function
+        pipe = NULL; // closed in InstanceThread function
 
         // wait for next client connection
     }
@@ -71,7 +71,7 @@ int main() {
 }
 
 DWORD WINAPI InstanceThread(void* threadParam) {
-    HANDLE pipe = (HANDLE)threadParam;
+    HANDLE pipe = (HANDLE)threadParam; // acquire ownership
 
     // Loop until done reading
     for (;;) {
