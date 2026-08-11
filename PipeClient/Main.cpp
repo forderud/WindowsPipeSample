@@ -73,11 +73,11 @@ int main(int argc, char* argv[]) {
 
     do {
         // Read from pipe
-        char replyBuf[BUF_SIZE]{};
+        char replyBuf[MAX_MESSAGE_SIZE]{};
         DWORD bytesRead = 0;
         success = ReadFile(pipe,
             replyBuf, // buffer to receive reply
-            BUF_SIZE, // size of buffer
+            MAX_MESSAGE_SIZE, // size of buffer
             &bytesRead,// number of bytes read
             NULL);    // not overlapped
 

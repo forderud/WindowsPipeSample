@@ -20,8 +20,8 @@ int main() {
             PIPE_READMODE_MESSAGE |   // message-read mode
             PIPE_WAIT,                // blocking mode
             PIPE_UNLIMITED_INSTANCES, // max. instances
-            BUF_SIZE,                 // output buffer size
-            BUF_SIZE,                 // input buffer size
+            MAX_MESSAGE_SIZE,         // output buffer size
+            MAX_MESSAGE_SIZE,         // input buffer size
             0,                        // client time-out
             NULL);                    // default security attribute
         if (pipe == INVALID_HANDLE_VALUE) {
@@ -76,11 +76,11 @@ DWORD WINAPI InstanceThread(void* threadParam) {
     // Loop until done reading
     for (;;) {
         // Read client requests from the pipe
-        std::vector<char> requestBuf(BUF_SIZE);
+        std::vector<char> requestBuf(MAX_MESSAGE_SIZE);
         DWORD bytesRead = 0;
         BOOL success = ReadFile(pipe,
             requestBuf.data(), // buffer to receive data 
-            BUF_SIZE,     // size of buffer 
+            MAX_MESSAGE_SIZE, // size of buffer 
             &bytesRead, // number of bytes read 
             NULL);        // not overlapped I/O 
         if (!success || (bytesRead == 0)) {
@@ -96,8 +96,8 @@ DWORD WINAPI InstanceThread(void* threadParam) {
         wprintf(L"Client Request: %hs\n", requestBuf.data());
 
         // copy reply to output buffer
-        std::vector<char> replyBuf(BUF_SIZE);
-        HRESULT hr = StringCchCopyA(replyBuf.data(), BUF_SIZE, "Answer from server");
+        std::vector<char> replyBuf(MAX_MESSAGE_SIZE);
+        HRESULT hr = StringCchCopyA(replyBuf.data(), MAX_MESSAGE_SIZE, "Answer from server");
         if (FAILED(hr)) {
             replyBuf.clear();
             printf("ERROR: Output buffer too small.\n");
