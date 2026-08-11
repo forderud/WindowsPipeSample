@@ -80,7 +80,7 @@ DWORD WINAPI InstanceThread(void* threadParam) {
         DWORD bytesRead = 0;
         BOOL success = ReadFile(pipe,
             requestBuf.data(), // buffer to receive data 
-            MAX_MESSAGE_SIZE, // size of buffer 
+            (DWORD)requestBuf.size(), // size of buffer 
             &bytesRead, // number of bytes read 
             NULL);        // not overlapped I/O 
         if (!success || (bytesRead == 0)) {
