@@ -11,8 +11,7 @@ DWORD WINAPI InstanceThread(void* lpvParam);
 /** Windows pipe server sample. */
 int main() {
     for (;;) {
-        wprintf(L"\nPipe Server: Main thread awaiting client connection on %s\n", PIPE_NAME);
-
+        wprintf(L"Awaiting client connection on %s\n", PIPE_NAME);
         // Create named pipe
         HANDLE pipe = CreateNamedPipeW(
             PIPE_NAME,                // pipe name
@@ -45,7 +44,7 @@ int main() {
             continue;
         }
 
-        printf("Client connected, creating a processing thread.\n");
+        printf("\nClient connected, creating a processing thread.\n");
 
         // Create a thread to handle client communication
         DWORD threadId = 0;
