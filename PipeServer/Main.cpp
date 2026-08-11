@@ -37,31 +37,34 @@ int main() {
                 connected = true; // client already conected before ConnectNamedPipe call
         }
 
-        if (connected) {
-            printf("Client connected, creating a processing thread.\n");
-
-            // Create a thread to handle client communication
-            DWORD  threadId = 0;
-            HANDLE thread = CreateThread(
-                NULL,            // no security attribute
-                0,               // default stack size 
-                InstanceThread,  // thread proc
-                pipe,            // thread parameter
-                0,               // not suspended
-                &threadId);      // returns thread ID
-
-            if (thread == NULL) {
-                wprintf(L"CreateThread failed (err %d).\n", GetLastError());
-                return -1;
-            }
-
-            CloseHandle(thread);
-        } else {
+        if (!connected) {
             // The client could not connect, so close the pipe.
             CloseHandle(pipe);
+
+            // wait for next client connection
+            continue;
         }
 
-        // continue loop to wait for the next client connection
+        printf("Client connected, creating a processing thread.\n");
+
+        // Create a thread to handle client communication
+        DWORD threadId = 0;
+        HANDLE thread = CreateThread(
+            NULL,            // no security attribute
+            0,               // default stack size 
+            InstanceThread,  // thread proc
+            pipe,            // thread parameter
+            0,               // not suspended
+            &threadId);
+
+        if (thread == NULL) {
+            wprintf(L"CreateThread failed (err %d).\n", GetLastError());
+            return -1;
+        }
+
+        CloseHandle(thread);
+
+        // wait for next client connection
     }
 
     return 0;
