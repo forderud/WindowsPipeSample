@@ -80,11 +80,10 @@ DWORD WINAPI InstanceThread(void* threadParam)
 {
     printf("InstanceThread created, receiving and processing messages.\n");
 
+    HANDLE pipe = (HANDLE)threadParam;
+
     std::vector<char> requestBuf(BUF_SIZE);
     std::vector<char> replyBuf(BUF_SIZE);
-
-    // The thread's parameter is a handle to a pipe object instance. 
-    HANDLE pipe = (HANDLE)threadParam;
 
     // Loop until done reading
     for (;;) {
