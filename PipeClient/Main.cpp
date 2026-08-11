@@ -7,6 +7,7 @@
 #include "../PipeMessage.hpp"
 
 
+/** Windows pipe client sample. */
 int main(int argc, char* argv[]) {
     std::string message = "Default message from client.";
     if (argc > 1)
