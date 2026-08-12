@@ -62,7 +62,7 @@ int main(int argc, char* argv[]) {
     DWORD bytesWritten = 0;
     success = WriteFile(pipe.get(),
         &message,// message 
-        (DWORD)message.length, // message length
+        message.Size(), // message length
         &bytesWritten,   // bytes written
         NULL);           // blocking call
     if (!success) {

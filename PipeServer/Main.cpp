@@ -101,10 +101,10 @@ DWORD ClientThread(void* threadParam) {
         DWORD bytesWritten = 0;
         success = WriteFile(pipe.get(),
             &replyBuf, // buffer to write from 
-            (DWORD)replyBuf.length, // number of bytes to write 
+            replyBuf.Size(), // number of bytes to write 
             &bytesWritten,   // number of bytes written 
             NULL);        // blocking call
-        if (!success || (replyBuf.length != bytesWritten)) {
+        if (!success || (replyBuf.Size() != bytesWritten)) {
             wprintf(L"WriteFile failed (err %d).\n", GetLastError());
             break;
         }

@@ -2,11 +2,18 @@
 #include <string_view>
 
 
-struct ProtocolMessage {
+class ProtocolMessage {
+public:
     static constexpr wchar_t PIPE_NAME[] = L"\\\\.\\pipe\\mynamedpipe";
 
+private:
     uint16_t length = 0; // Total message size, including "length" field
     char message[510]{}; // ASCII string (not null-terminated). Actual lenght specified by "length"
+
+public:
+    DWORD Size() const {
+        return length;
+    }
 
     std::string_view Get() const {
         return {message, (length - sizeof(length))};
