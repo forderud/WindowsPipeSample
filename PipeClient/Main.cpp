@@ -77,8 +77,12 @@ int main(int argc, char* argv[]) {
             (DWORD)sizeof(replyBuf), // size of buffer
             &bytesRead,// number of bytes read
             NULL);    // blocking call
-        if (!success && (GetLastError() != ERROR_MORE_DATA))
-            break;
+        if (!success) {
+            if (GetLastError() == ERROR_MORE_DATA)
+                ; // partial read, buffer too small
+            else
+                break; // failed read
+        }
 
         wprintf(L"Received message: %.*hs\n", replyBuf.length, replyBuf.message);
     } while (!success);  // repeat loop if ERROR_MORE_DATA
