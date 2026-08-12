@@ -1,12 +1,24 @@
 #include <memory>
+#include <string_view>
 
 #define MAX_MESSAGE_SIZE 512 // in bytes
 
 const wchar_t PIPE_NAME[] = L"\\\\.\\pipe\\mynamedpipe";
 
-// Protocol:
-// Bidirectional communication of null-terminated ASCII strings.
+// Messaging protocol struct
+struct Message {
+    uint16_t length = 0; // incl. this field
+    char message[MAX_MESSAGE_SIZE]{}; // actual lenght specified by "length" (not null-terminated)
 
+    std::string_view Get() const {
+        return {message, length};
+    }
+
+    void Set(std::string_view msg) {
+        length = (uint16_t)msg.size();
+        memcpy(message, msg.data(), length);
+    }
+};
 
 
 struct HandleDeleter {

@@ -10,9 +10,9 @@
 
 /** Windows pipe client sample. */
 int main(int argc, char* argv[]) {
-    std::string message = "Some message from client.";
+    std::string content = "Some message from client.";
     if (argc > 1)
-        message = argv[1];
+        content = argv[1];
 
     // Try to open a named pipe; wait for it, if necessary. 
     unique_handle pipe(INVALID_HANDLE_VALUE);
@@ -54,12 +54,16 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    wprintf(L"Sending message: %hs\n", message.c_str());
+    Message message{};
+    message.length = (uint16_t)(content.length() + sizeof(message.length)); // add protcol header
+    memcpy(message.message, content.c_str(), content.length());
+
+    wprintf(L"Sending message: %.*hs\n", message.length, message.message);
 
     DWORD bytesWritten = 0;
     success = WriteFile(pipe.get(),
-        message.c_str(),// message 
-        (DWORD)(message.length() + 1), // message length
+        &message,// message 
+        (DWORD)message.length, // message length
         &bytesWritten,   // bytes written
         NULL);           // blocking call
     if (!success) {
@@ -69,17 +73,17 @@ int main(int argc, char* argv[]) {
 
     do {
         // Read from pipe
-        std::vector<char> replyBuf(MAX_MESSAGE_SIZE);
+        Message replyBuf{};
         DWORD bytesRead = 0;
         success = ReadFile(pipe.get(),
-            replyBuf.data(), // buffer to receive reply
-            (DWORD)replyBuf.size(), // size of buffer
+            &replyBuf, // buffer to receive reply
+            (DWORD)sizeof(replyBuf), // size of buffer
             &bytesRead,// number of bytes read
             NULL);    // blocking call
         if (!success && (GetLastError() != ERROR_MORE_DATA))
             break;
 
-        wprintf(L"Received message: %hs\n", replyBuf.data());
+        wprintf(L"Received message: %.*hs\n", replyBuf.length, replyBuf.message);
     } while (!success);  // repeat loop if ERROR_MORE_DATA
 
     if (!success) {

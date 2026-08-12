@@ -73,11 +73,11 @@ DWORD ClientThread(void* threadParam) {
     // Loop until done reading
     for (;;) {
         // Read client requests from the pipe
-        std::vector<char> requestBuf(MAX_MESSAGE_SIZE);
+        Message requestBuf{};
         DWORD bytesRead = 0;
         BOOL success = ReadFile(pipe.get(),
-            requestBuf.data(), // buffer to receive data 
-            (DWORD)requestBuf.size(), // size of buffer 
+            &requestBuf, // buffer to receive data 
+            (DWORD)sizeof(requestBuf), // size of buffer 
             &bytesRead, // number of bytes read 
             NULL);        // blocking call
         if (!success || (bytesRead == 0)) {
@@ -90,26 +90,25 @@ DWORD ClientThread(void* threadParam) {
         }
 
         // process incoming message
-        wprintf(L"Client Request: %hs\n", requestBuf.data());
+        wprintf(L"Client Request: %.*hs\n", requestBuf.length, requestBuf.message);
 
         // copy reply to output buffer
-        std::vector<char> replyBuf(MAX_MESSAGE_SIZE);
-        HRESULT hr = StringCchCopyA(replyBuf.data(), MAX_MESSAGE_SIZE, "Answer from server");
+        Message replyBuf{};
+        HRESULT hr = StringCchCopyA(replyBuf.message, MAX_MESSAGE_SIZE, "Answer from server");
         if (FAILED(hr)) {
-            replyBuf.clear();
             printf("ERROR: Output buffer too small.\n");
             return 1;
         }
-        replyBuf.resize((strlen(replyBuf.data()) + 1)); // add zero termination
+        replyBuf.length = (uint16_t)strlen(replyBuf.message) + sizeof(replyBuf.length); // add protcol header
 
         // write reply to pipe
         DWORD bytesWritten = 0;
         success = WriteFile(pipe.get(),
-            replyBuf.data(), // buffer to write from 
-            (DWORD)replyBuf.size(), // number of bytes to write 
+            &replyBuf, // buffer to write from 
+            (DWORD)replyBuf.length, // number of bytes to write 
             &bytesWritten,   // number of bytes written 
             NULL);        // blocking call
-        if (!success || (replyBuf.size() != bytesWritten)) {
+        if (!success || (replyBuf.length != bytesWritten)) {
             wprintf(L"WriteFile failed (err %d).\n", GetLastError());
             break;
         }
