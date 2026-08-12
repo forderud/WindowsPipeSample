@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
     unique_handle pipe(INVALID_HANDLE_VALUE);
     do {
         pipe.reset(CreateFileW(
-            Message::PIPE_NAME,// pipe name
+            ProtocolMessage::PIPE_NAME,// pipe name
             GENERIC_READ |  // read and write access
             GENERIC_WRITE,
             0,              // no sharing
@@ -33,14 +33,14 @@ int main(int argc, char* argv[]) {
                 return -1;
             }
             // pipe is busy, so wait for 10 seconds before retrying
-            if (!WaitNamedPipeW(Message::PIPE_NAME, 10000)) {
+            if (!WaitNamedPipeW(ProtocolMessage::PIPE_NAME, 10000)) {
                 wprintf(L"Could not open pipe: 10 second wait timed out.");
                 return -1;
             }
         }
     } while (pipe.get() == INVALID_HANDLE_VALUE);
 
-    wprintf(L"Connected to pipe %s\n\n", Message::PIPE_NAME);
+    wprintf(L"Connected to pipe %s\n\n", ProtocolMessage::PIPE_NAME);
 
     // change to "MESSAGE" read mode to avoid reads of partial messages
     DWORD mode = PIPE_READMODE_MESSAGE;
@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    Message message{};
+    ProtocolMessage message{};
     message.Set(content);
     wprintf(L"Sending message: %.*hs\n", message.length, message.message);
 
@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
 
     do {
         // Read from pipe
-        Message replyBuf{};
+        ProtocolMessage replyBuf{};
         DWORD bytesRead = 0;
         success = ReadFile(pipe.get(),
             &replyBuf, // buffer to receive reply

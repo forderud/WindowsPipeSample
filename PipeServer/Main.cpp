@@ -10,17 +10,17 @@ DWORD ClientThread(void* lpvParam);
 /** Windows pipe server sample. */
 int main() {
     for (;;) {
-        wprintf(L"Awaiting client connection on %s\n", Message::PIPE_NAME);
+        wprintf(L"Awaiting client connection on %s\n", ProtocolMessage::PIPE_NAME);
         // Create named pipe
         unique_handle pipe(CreateNamedPipeW(
-            Message::PIPE_NAME,       // pipe name
+            ProtocolMessage::PIPE_NAME,       // pipe name
             PIPE_ACCESS_DUPLEX,       // read/write access
             PIPE_TYPE_MESSAGE |       // message type pipe
             PIPE_READMODE_MESSAGE |   // message-read mode
             PIPE_WAIT,                // blocking mode
             PIPE_UNLIMITED_INSTANCES, // max. instances
-            sizeof(Message),          // output buffer size
-            sizeof(Message),          // input buffer size
+            sizeof(ProtocolMessage),  // output buffer size
+            sizeof(ProtocolMessage),  // input buffer size
             0,                        // client time-out
             NULL));                   // default security attribute
         if (pipe.get() == INVALID_HANDLE_VALUE) {
@@ -72,7 +72,7 @@ DWORD ClientThread(void* threadParam) {
     // Loop until done reading
     for (;;) {
         // Read client requests from the pipe
-        Message requestBuf{};
+        ProtocolMessage requestBuf{};
         DWORD bytesRead = 0;
         BOOL success = ReadFile(pipe.get(),
             &requestBuf, // buffer to receive data 
@@ -92,7 +92,7 @@ DWORD ClientThread(void* threadParam) {
         wprintf(L"Client Request: %.*hs\n", requestBuf.length, requestBuf.message);
 
         // copy reply to output buffer
-        Message replyBuf{};
+        ProtocolMessage replyBuf{};
         replyBuf.Set("Answer from server");
 
         // write reply to pipe

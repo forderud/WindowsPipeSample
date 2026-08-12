@@ -1,8 +1,8 @@
 #include <memory>
 #include <string_view>
 
-// Messaging protocol struct
-struct Message {
+
+struct ProtocolMessage {
     static constexpr wchar_t PIPE_NAME[] = L"\\\\.\\pipe\\mynamedpipe";
 
     static constexpr size_t MAX_MESSAGE_SIZE = 510; // in bytes
