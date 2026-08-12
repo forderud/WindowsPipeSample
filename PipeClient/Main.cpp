@@ -27,18 +27,19 @@ int main(int argc, char* argv[]) {
             0,              // default attributes
             NULL));         // no template file
 
-        if (pipe.get() != INVALID_HANDLE_VALUE)
+        if (pipe.get() == INVALID_HANDLE_VALUE) {
+            // Exit if other error than ERROR_PIPE_BUSY
+            if (GetLastError() != ERROR_PIPE_BUSY) {
+                wprintf(L"Could not open pipe (err %d)\n", GetLastError());
+                return -1;
+            }
+            // pipe is busy, so wait for 10 seconds before retrying
+            if (!WaitNamedPipeW(PIPE_NAME, 10000)) {
+                wprintf(L"Could not open pipe: 10 second wait timed out.");
+                return -1;
+            }
+        } else {
             break; // valid handle
-
-        // Exit if other error than ERROR_PIPE_BUSY
-        if (GetLastError() != ERROR_PIPE_BUSY) {
-            wprintf(L"Could not open pipe (err %d)\n", GetLastError());
-            return -1;
-        }
-        // pipe is busy, so wait for 10 seconds before retrying
-        if (!WaitNamedPipeW(PIPE_NAME, 10000)) {
-            printf("Could not open pipe: 10 second wait timed out.");
-            return -1;
         }
 
         // retry connecting to busy pipe
