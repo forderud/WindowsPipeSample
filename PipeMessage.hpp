@@ -36,7 +36,7 @@ struct HandleDeleter {
     using pointer = HANDLE;
 
     void operator()(HANDLE handle) const {
-        if (handle == nullptr) // for default-constructred unique_ptr
+        if (handle == NULL) // used for thread handles
             return;
 
         if (handle == INVALID_HANDLE_VALUE)
