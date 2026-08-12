@@ -65,8 +65,7 @@ int main(int argc, char* argv[]) {
         message.c_str(),// message 
         (DWORD)(message.length() + 1), // message length
         &bytesWritten,   // bytes written
-        NULL);           // not overlapped
-
+        NULL);           // blocking call
     if (!success) {
         wprintf(L"WriteFile to pipe failed (err %d)\n", GetLastError());
         return -1;
@@ -80,8 +79,7 @@ int main(int argc, char* argv[]) {
             replyBuf.data(), // buffer to receive reply
             (DWORD)replyBuf.size(), // size of buffer
             &bytesRead,// number of bytes read
-            NULL);    // not overlapped
-
+            NULL);    // blocking call
         if (!success && (GetLastError() != ERROR_MORE_DATA))
             break;
 

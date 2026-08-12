@@ -82,7 +82,7 @@ DWORD ClientThread(void* threadParam) {
             requestBuf.data(), // buffer to receive data 
             (DWORD)requestBuf.size(), // size of buffer 
             &bytesRead, // number of bytes read 
-            NULL);        // not overlapped I/O 
+            NULL);        // blocking call
         if (!success || (bytesRead == 0)) {
             if (GetLastError() == ERROR_BROKEN_PIPE) {
                 wprintf(L"Client disconnected.\n");
@@ -111,7 +111,7 @@ DWORD ClientThread(void* threadParam) {
             replyBuf.data(), // buffer to write from 
             (DWORD)replyBuf.size(), // number of bytes to write 
             &bytesWritten,   // number of bytes written 
-            NULL);        // not overlapped I/O 
+            NULL);        // blocking call
         if (!success || (replyBuf.size() != bytesWritten)) {
             wprintf(L"WriteFile failed (err %d).\n", GetLastError());
             break;
