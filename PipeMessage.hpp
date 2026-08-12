@@ -5,10 +5,8 @@
 struct ProtocolMessage {
     static constexpr wchar_t PIPE_NAME[] = L"\\\\.\\pipe\\mynamedpipe";
 
-    static constexpr size_t MAX_MESSAGE_SIZE = 510; // in bytes
-
     uint16_t length = 0; // incl. this field
-    char message[MAX_MESSAGE_SIZE]{}; // actual lenght specified by "length" (not null-terminated)
+    char message[510]{}; // actual lenght specified by "length" (not null-terminated)
 
     std::string_view Get() const {
         return {message, (length - sizeof(length))};
@@ -19,6 +17,7 @@ struct ProtocolMessage {
         memcpy(message, msg.data(), msg.size()); // not null-terminated
     }
 };
+static_assert(sizeof(ProtocolMessage) == 512);
 
 
 struct HandleDeleter {
