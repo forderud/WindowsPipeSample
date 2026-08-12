@@ -55,7 +55,9 @@ int main(int argc, char* argv[]) {
 
     ProtocolMessage message{};
     message.Set(content);
-    wprintf(L"Sending message: %.*hs\n", message.length, message.message);
+    wprintf(L"Sending message: ");
+    message.Print();
+    wprintf(L"\n");
 
     DWORD bytesWritten = 0;
     success = WriteFile(pipe.get(),

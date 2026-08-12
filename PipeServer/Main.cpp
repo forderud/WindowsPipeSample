@@ -89,7 +89,9 @@ DWORD ClientThread(void* threadParam) {
         }
 
         // process incoming message
-        wprintf(L"Client Request: %.*hs\n", requestBuf.length, requestBuf.message);
+        wprintf(L"Client Request: ");
+        requestBuf.Print();
+        wprintf(L"\n");
 
         // copy reply to output buffer
         ProtocolMessage replyBuf{};

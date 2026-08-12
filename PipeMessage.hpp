@@ -16,6 +16,11 @@ struct ProtocolMessage {
         length = sizeof(length) + (uint16_t)msg.size();
         memcpy(message, msg.data(), msg.size()); // not null-terminated
     }
+
+    void Print() const {
+        auto msg = Get();
+        wprintf(L"%.*hs", (int)msg.length(), msg.data());
+    }
 };
 static_assert(sizeof(ProtocolMessage) == 512);
 
