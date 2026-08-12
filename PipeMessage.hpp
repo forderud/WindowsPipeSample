@@ -36,11 +36,11 @@ struct HandleDeleter {
     using pointer = HANDLE;
 
     void operator()(HANDLE handle) const {
-        if (handle == NULL) // used for thread handles
-            return;
+        if (handle == NULL)
+            return; // invalid thread handle
 
         if (handle == INVALID_HANDLE_VALUE)
-            return;
+            return; // invalid file, pipe handle
 
         CloseHandle(handle);
     }
