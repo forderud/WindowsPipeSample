@@ -67,14 +67,14 @@ int main() {
 }
 
 DWORD ClientThread(void* threadParam) {
-    HANDLE pipe = (HANDLE)threadParam; // acquire ownership
+    unique_handle pipe((HANDLE)threadParam); // acquire ownership
 
     // Loop until done reading
     for (;;) {
         // Read client requests from the pipe
         std::vector<char> requestBuf(MAX_MESSAGE_SIZE);
         DWORD bytesRead = 0;
-        BOOL success = ReadFile(pipe,
+        BOOL success = ReadFile(pipe.get(),
             requestBuf.data(), // buffer to receive data 
             (DWORD)requestBuf.size(), // size of buffer 
             &bytesRead, // number of bytes read 
@@ -103,7 +103,7 @@ DWORD ClientThread(void* threadParam) {
 
         // write reply to pipe
         DWORD bytesWritten = 0;
-        success = WriteFile(pipe,
+        success = WriteFile(pipe.get(),
             replyBuf.data(), // buffer to write from 
             (DWORD)replyBuf.size(), // number of bytes to write 
             &bytesWritten,   // number of bytes written 
@@ -115,8 +115,7 @@ DWORD ClientThread(void* threadParam) {
     }
 
     // flush & disconnect pipe before closing it
-    FlushFileBuffers(pipe);
-    DisconnectNamedPipe(pipe);
-    CloseHandle(pipe);
+    FlushFileBuffers(pipe.get());
+    DisconnectNamedPipe(pipe.get());
     return 0;
 }
