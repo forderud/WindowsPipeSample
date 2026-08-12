@@ -48,7 +48,7 @@ int main() {
             NULL,            // no security attribute
             0,               // default stack size 
             ClientThread,    // thread proc
-            pipe.get(),      // thread parameter (transfer ownership)
+            pipe.release(),  // thread parameter (transfer ownership)
             0,               // not suspended
             &threadId));
 
@@ -56,8 +56,6 @@ int main() {
             wprintf(L"CreateThread failed (err %d).\n", GetLastError());
             return -1;
         }
-
-        pipe.release(); // ownership transferred to thread
 
         // wait for next client connection
         continue;
