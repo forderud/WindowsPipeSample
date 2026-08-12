@@ -5,8 +5,8 @@
 struct ProtocolMessage {
     static constexpr wchar_t PIPE_NAME[] = L"\\\\.\\pipe\\mynamedpipe";
 
-    uint16_t length = 0; // incl. this field
-    char message[510]{}; // actual lenght specified by "length" (not null-terminated)
+    uint16_t length = 0; // Total message size, including "length" field
+    char message[510]{}; // ASCII string (not null-terminated). Actual lenght specified by "length"
 
     std::string_view Get() const {
         return {message, (length - sizeof(length))};
