@@ -58,7 +58,7 @@ int main() {
             return -1;
         }
 
-        pipe.release(); // closed in ClientThread function
+        pipe.release(); // ownership transferred to thread
 
         // wait for next client connection
     }
