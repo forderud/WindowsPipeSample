@@ -13,9 +13,13 @@ struct HandleDeleter {
     using pointer = HANDLE;
 
     void operator()(HANDLE handle) const {
-        if ((handle != INVALID_HANDLE_VALUE) && (handle != nullptr)) {
-            CloseHandle(handle);
-        }
+        if (handle == nullptr) // for default-constructred unique_ptr
+            return;
+
+        if (handle == INVALID_HANDLE_VALUE)
+            return;
+
+        CloseHandle(handle);
     }
 };
 
