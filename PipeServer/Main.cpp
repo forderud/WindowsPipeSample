@@ -48,20 +48,19 @@ int main() {
 
         // Create a thread to handle client communication
         DWORD threadId = 0;
-        HANDLE thread = CreateThread(
+        unique_handle thread(CreateThread(
             NULL,            // no security attribute
             0,               // default stack size 
             ClientThread,    // thread proc
             pipe,            // thread parameter (transfer ownership)
             0,               // not suspended
-            &threadId);
+            &threadId));
 
         if (thread == NULL) {
             wprintf(L"CreateThread failed (err %d).\n", GetLastError());
             return -1;
         }
 
-        CloseHandle(thread);
         pipe = NULL; // closed in ClientThread function
 
         // wait for next client connection
