@@ -15,9 +15,9 @@ int main(int argc, char* argv[]) {
         message = argv[1];
 
     // Try to open a named pipe; wait for it, if necessary. 
-    HANDLE pipe = nullptr;
+    unique_handle pipe;
     for (;;) {
-        pipe = CreateFileW(
+        pipe.reset(CreateFileW(
             PIPE_NAME,      // pipe name
             GENERIC_READ |  // read and write access
             GENERIC_WRITE,
@@ -25,9 +25,9 @@ int main(int argc, char* argv[]) {
             NULL,           // default security attributes
             OPEN_EXISTING,  // opens existing pipe
             0,              // default attributes
-            NULL);          // no template file
+            NULL));         // no template file
 
-        if (pipe != INVALID_HANDLE_VALUE)
+        if (pipe.get() != INVALID_HANDLE_VALUE)
             break; // valid handle
 
         // Exit if other error than ERROR_PIPE_BUSY
@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
 
     // The pipe connected; change to message-read mode. 
     DWORD mode = PIPE_READMODE_MESSAGE;
-    BOOL success = SetNamedPipeHandleState(pipe,
+    BOOL success = SetNamedPipeHandleState(pipe.get(),
         &mode,    // new pipe mode 
         NULL,     // don't set maximum bytes 
         NULL);    // don't set maximum time 
@@ -61,7 +61,7 @@ int main(int argc, char* argv[]) {
     wprintf(L"Sending message: %hs\n", message.c_str());
 
     DWORD bytesWritten = 0;
-    success = WriteFile(pipe,
+    success = WriteFile(pipe.get(),
         message.c_str(),// message 
         (DWORD)(message.length() + 1), // message length
         &bytesWritten,   // bytes written
@@ -75,7 +75,7 @@ int main(int argc, char* argv[]) {
         // Read from pipe
         std::vector<char> replyBuf(MAX_MESSAGE_SIZE);
         DWORD bytesRead = 0;
-        success = ReadFile(pipe,
+        success = ReadFile(pipe.get(),
             replyBuf.data(), // buffer to receive reply
             (DWORD)replyBuf.size(), // size of buffer
             &bytesRead,// number of bytes read
@@ -90,8 +90,6 @@ int main(int argc, char* argv[]) {
         wprintf(L"ReadFile from pipe failed (err %d)\n", GetLastError());
         return -1;
     }
-
-    CloseHandle(pipe);
 
     return 0;
 }
