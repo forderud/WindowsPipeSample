@@ -61,6 +61,7 @@ int main() {
         pipe.release(); // ownership transferred to thread
 
         // wait for next client connection
+        continue;
     }
 
     return 0;
