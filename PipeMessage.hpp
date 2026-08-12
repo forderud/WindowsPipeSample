@@ -1,10 +1,10 @@
 #include <memory>
 #include <string_view>
 
-const wchar_t PIPE_NAME[] = L"\\\\.\\pipe\\mynamedpipe";
-
 // Messaging protocol struct
 struct Message {
+    static constexpr wchar_t PIPE_NAME[] = L"\\\\.\\pipe\\mynamedpipe";
+
     static constexpr size_t MAX_MESSAGE_SIZE = 510; // in bytes
 
     uint16_t length = 0; // incl. this field

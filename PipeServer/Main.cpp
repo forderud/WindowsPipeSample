@@ -10,10 +10,10 @@ DWORD ClientThread(void* lpvParam);
 /** Windows pipe server sample. */
 int main() {
     for (;;) {
-        wprintf(L"Awaiting client connection on %s\n", PIPE_NAME);
+        wprintf(L"Awaiting client connection on %s\n", Message::PIPE_NAME);
         // Create named pipe
         unique_handle pipe(CreateNamedPipeW(
-            PIPE_NAME,                // pipe name
+            Message::PIPE_NAME,       // pipe name
             PIPE_ACCESS_DUPLEX,       // read/write access
             PIPE_TYPE_MESSAGE |       // message type pipe
             PIPE_READMODE_MESSAGE |   // message-read mode
