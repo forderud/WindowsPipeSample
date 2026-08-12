@@ -86,7 +86,9 @@ int main(int argc, char* argv[]) {
                 break; // failed read
         }
 
-        wprintf(L"Received message: %.*hs\n", replyBuf.length, replyBuf.message);
+        wprintf(L"Received message: ");
+        replyBuf.Print();
+        wprintf(L"\n");
     } while (!success);  // repeat loop if ERROR_MORE_DATA
 
     if (!success) {
