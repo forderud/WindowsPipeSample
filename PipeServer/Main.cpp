@@ -20,8 +20,8 @@ int main() {
             PIPE_READMODE_MESSAGE |   // message-read mode
             PIPE_WAIT,                // blocking mode
             PIPE_UNLIMITED_INSTANCES, // max. instances
-            Message::MAX_SIZE,        // output buffer size
-            Message::MAX_SIZE,        // input buffer size
+            sizeof(Message),          // output buffer size
+            sizeof(Message),          // input buffer size
             0,                        // client time-out
             NULL));                   // default security attribute
         if (pipe.get() == INVALID_HANDLE_VALUE) {
