@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
 
     wprintf(L"Connected to pipe %s\n\n", PIPE_NAME);
 
-    // The pipe connected; change to message-read mode. 
+    // change to message-read mode
     DWORD mode = PIPE_READMODE_MESSAGE;
     BOOL success = SetNamedPipeHandleState(pipe.get(),
         &mode,    // new pipe mode 
