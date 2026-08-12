@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
 
     wprintf(L"Connected to pipe %s\n\n", PIPE_NAME);
 
-    // change to "MESSAGE" read mode to avoid message partial reads
+    // change to "MESSAGE" read mode to avoid reads of partial messages
     DWORD mode = PIPE_READMODE_MESSAGE;
     BOOL success = SetNamedPipeHandleState(pipe.get(),
         &mode,    // new pipe mode 
