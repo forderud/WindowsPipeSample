@@ -13,7 +13,7 @@ int main() {
     for (;;) {
         wprintf(L"Awaiting client connection on %s\n", PIPE_NAME);
         // Create named pipe
-        HANDLE pipe = CreateNamedPipeW(
+        unique_handle pipe(CreateNamedPipeW(
             PIPE_NAME,                // pipe name
             PIPE_ACCESS_DUPLEX,       // read/write access
             PIPE_TYPE_MESSAGE |       // message type pipe
@@ -23,23 +23,20 @@ int main() {
             MAX_MESSAGE_SIZE,         // output buffer size
             MAX_MESSAGE_SIZE,         // input buffer size
             0,                        // client time-out
-            NULL);                    // default security attribute
-        if (pipe == INVALID_HANDLE_VALUE) {
+            NULL));                   // default security attribute
+        if (pipe.get() == INVALID_HANDLE_VALUE) {
             wprintf(L"CreateNamedPipe failed (err %d).\n", GetLastError());
             return -1;
         }
 
         // Wait for client to connect
-        bool connected = ConnectNamedPipe(pipe, NULL);
+        bool connected = ConnectNamedPipe(pipe.get(), NULL);
         if (!connected) {
             if (GetLastError() == ERROR_PIPE_CONNECTED)
                 connected = true; // client already conected before ConnectNamedPipe call
         }
 
         if (!connected) {
-            // The client could not connect, so close the pipe.
-            CloseHandle(pipe);
-
             // wait for next client connection
             continue;
         }
@@ -52,7 +49,7 @@ int main() {
             NULL,            // no security attribute
             0,               // default stack size 
             ClientThread,    // thread proc
-            pipe,            // thread parameter (transfer ownership)
+            pipe.get(),      // thread parameter (transfer ownership)
             0,               // not suspended
             &threadId));
 
@@ -61,7 +58,7 @@ int main() {
             return -1;
         }
 
-        pipe = NULL; // closed in ClientThread function
+        pipe.release(); // closed in ClientThread function
 
         // wait for next client connection
     }
