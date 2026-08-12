@@ -94,12 +94,7 @@ DWORD ClientThread(void* threadParam) {
 
         // copy reply to output buffer
         Message replyBuf{};
-        HRESULT hr = StringCchCopyA(replyBuf.message, MAX_MESSAGE_SIZE, "Answer from server");
-        if (FAILED(hr)) {
-            printf("ERROR: Output buffer too small.\n");
-            return 1;
-        }
-        replyBuf.length = (uint16_t)strlen(replyBuf.message) + sizeof(replyBuf.length); // add protcol header
+        replyBuf.Set("Answer from server");
 
         // write reply to pipe
         DWORD bytesWritten = 0;

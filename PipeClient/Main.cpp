@@ -55,9 +55,7 @@ int main(int argc, char* argv[]) {
     }
 
     Message message{};
-    message.length = (uint16_t)(content.length() + sizeof(message.length)); // add protcol header
-    memcpy(message.message, content.c_str(), content.length());
-
+    message.Set(content);
     wprintf(L"Sending message: %.*hs\n", message.length, message.message);
 
     DWORD bytesWritten = 0;
