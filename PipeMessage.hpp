@@ -1,14 +1,14 @@
 #include <memory>
 #include <string_view>
 
-#define MAX_MESSAGE_SIZE 512 // in bytes
-
 const wchar_t PIPE_NAME[] = L"\\\\.\\pipe\\mynamedpipe";
 
 // Messaging protocol struct
 struct Message {
+    static constexpr size_t MAX_SIZE = 512; // in bytes
+
     uint16_t length = 0; // incl. this field
-    char message[MAX_MESSAGE_SIZE]{}; // actual lenght specified by "length" (not null-terminated)
+    char message[MAX_SIZE]{}; // actual lenght specified by "length" (not null-terminated)
 
     std::string_view Get() const {
         return {message, (length - sizeof(length))};
