@@ -15,8 +15,8 @@ int main(int argc, char* argv[]) {
         message = argv[1];
 
     // Try to open a named pipe; wait for it, if necessary. 
-    unique_handle pipe;
-    for (;;) {
+    unique_handle pipe(INVALID_HANDLE_VALUE);
+    do {
         pipe.reset(CreateFileW(
             PIPE_NAME,      // pipe name
             GENERIC_READ |  // read and write access
@@ -38,13 +38,8 @@ int main(int argc, char* argv[]) {
                 wprintf(L"Could not open pipe: 10 second wait timed out.");
                 return -1;
             }
-        } else {
-            break; // valid handle
         }
-
-        // retry connecting to busy pipe
-        continue;
-    }
+    } while (pipe.get() == INVALID_HANDLE_VALUE);
 
     wprintf(L"Connected to pipe %s\n\n", PIPE_NAME);
 
