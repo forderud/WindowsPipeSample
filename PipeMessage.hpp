@@ -11,12 +11,12 @@ struct Message {
     char message[MAX_MESSAGE_SIZE]{}; // actual lenght specified by "length" (not null-terminated)
 
     std::string_view Get() const {
-        return {message, length};
+        return {message, (length - sizeof(length))};
     }
 
     void Set(std::string_view msg) {
-        length = (uint16_t)msg.size();
-        memcpy(message, msg.data(), length);
+        length = sizeof(length) + (uint16_t)msg.size();
+        memcpy(message, msg.data(), msg.size()); // not null-terminated
     }
 };
 
