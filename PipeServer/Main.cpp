@@ -2,7 +2,6 @@
 #include <windows.h> 
 #include <stdio.h> 
 #include <strsafe.h>
-#include <vector>
 #include "../PipeMessage.hpp"
 
 

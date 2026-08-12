@@ -4,7 +4,6 @@
 #include <conio.h>
 #include <tchar.h>
 #include <string>
-#include <vector>
 #include "../PipeMessage.hpp"
 
 
